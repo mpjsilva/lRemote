@@ -52,6 +52,7 @@
 #include "remmina_sodium.h"
 #include "remmina.h"
 #include "remmina_exec.h"
+#include "lremote_mremoteng.h"
 #include "remmina_file_manager.h"
 #include "remmina_icon.h"
 #include "remmina_log.h"
@@ -135,6 +136,10 @@ static GOptionEntry remmina_options[] =
 	// TRANSLATORS: Shown in terminal. Do not use characters that may be not supported on a terminal
 	{ "set-option",	      0,    0,			  G_OPTION_ARG_STRING_ARRAY,   NULL, N_("Set one or more profile settings, to be used with --update-profile"),		     NULL	},
 	{ "encrypt-password", 0,    0,			  G_OPTION_ARG_NONE,	       NULL, N_("Encrypt a password"),												  NULL		 },
+	// TRANSLATORS: Shown in terminal. Do not use characters that may be not supported on a terminal
+	{ "import-mremoteng", 0,    0,			  G_OPTION_ARG_FILENAME,       NULL, N_("Import an mRemoteNG connections file (confCons.xml) and quit"),						  N_("FILE")	 },
+	// TRANSLATORS: Shown in terminal. Do not use characters that may be not supported on a terminal
+	{ "mremoteng-password", 0,  0,			  G_OPTION_ARG_STRING,	       NULL, N_("Master password of the mRemoteNG file (default: mR3m)"),						  N_("PASSWORD") },
 	{ "disable-news",     0,    0,            G_OPTION_ARG_NONE,           NULL, N_("Disable news"),                                                NULL           },
 	{ "disable-stats",    0,    0,            G_OPTION_ARG_NONE,           NULL, N_("Disable stats"),                                                NULL           },
 	{ "disable-toolbar", 0,    0,			  G_OPTION_ARG_NONE,	       NULL, N_("Disable toolbar"),												  NULL		 },
@@ -342,6 +347,31 @@ static gint remmina_on_local_cmdline(GApplication *app, GVariantDict *opts, gpoi
 
 	/* Here you handle any command line options that you want to be executed
 	 * in the local instance (the non-unique instance) */
+
+	{
+		gchar *mrng_file = NULL, *mrng_pw = NULL;
+		if (g_variant_dict_lookup(opts, "import-mremoteng", "^ay", &mrng_file)) {
+			LremoteMrngStats stats = { 0 };
+			GError *err = NULL;
+			g_variant_dict_lookup(opts, "mremoteng-password", "s", &mrng_pw);
+			/* The built-in SSH plugin is normally registered at startup, which never runs here */
+			remmina_ssh_plugin_register();
+			if (lremote_mremoteng_import(mrng_file, mrng_pw, &stats, &err)) {
+				g_print("%d profiles imported, %d folders, %d unsupported%s%s\n", stats.imported, stats.folders,
+					stats.unsupported, stats.unsupported_names ? ": " : "",
+					stats.unsupported_names ? stats.unsupported_names->str : "");
+				status = 0;
+			} else {
+				g_printerr("Import failed: %s\n", err ? err->message : "unknown error");
+				g_clear_error(&err);
+				status = 1;
+			}
+			lremote_mremoteng_stats_clear(&stats);
+			g_free(mrng_file);
+			g_free(mrng_pw);
+			return status;
+		}
+	}
 
 	if (g_variant_dict_lookup_value(opts, "version", NULL)) {
 		remmina_exec_command(REMMINA_COMMAND_VERSION, NULL);

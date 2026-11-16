@@ -97,6 +97,8 @@ src/remmina_scheduler.c
 src/remmina_pref_dialog.c
 src/remmina_theme.c
 src/remmina_backup.c
+src/lremote_crypto.c
+src/lremote_mremoteng.c
 src/remmina_sysinfo.h
 plugins/spice/spice_plugin_usb.c
 plugins/spice/spice_file.c
