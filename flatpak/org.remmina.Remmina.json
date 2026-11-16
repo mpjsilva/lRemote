@@ -1,0 +1,583 @@
+{
+    "app-id": "org.remmina.Remmina",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "48",
+    "sdk": "org.gnome.Sdk",
+    "command": "remmina",
+    "cleanup": [
+        "*.a",
+        "*.la",
+        "/build-aux",
+        "/include",
+        "/lib/cmake",
+        "/lib/pkgconfig",
+        "/share/gnome-session",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/pkgconfig",
+        "/share/xsessions"
+    ],
+    "finish-args": [
+        "--share=ipc",
+        "--share=network",
+        "--socket=cups",
+        "--socket=fallback-x11",
+        "--socket=pcsc",
+        "--socket=pulseaudio",
+        "--socket=ssh-auth",
+        "--socket=wayland",
+        "--env=OPENSSL_CONF=/app/share/legacy-openssl.cnf",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+        "--device=all",
+        "--talk-name=ca.desrt.dconf",
+        "--talk-name=org.gtk.vfs.*",
+        "--talk-name=org.freedesktop.Notifications",
+        "--talk-name=org.freedesktop.secrets",
+        "--talk-name=org.kde.StatusNotifierWatcher",
+        "--talk-name=org.kde.kwalletd5",
+        "--talk-name=com.canonical.indicator.application",
+        "--talk-name=org.ayatana.indicator.application",
+        "--talk-name=org.gnome.Shell",
+        "--talk-name=com.canonical.Unity",
+        "--talk-name=org.freedesktop.Flatpak",
+        "--system-talk-name=org.freedesktop.Avahi",
+        "--filesystem=xdg-run/pipewire-0",
+        "--filesystem=xdg-run/gvfsd",
+        "--filesystem=home",
+        "--filesystem=xdg-download"
+    ],
+    "add-extensions": {
+        "org.freedesktop.Platform.ffmpeg-full": {
+            "directory": "lib/ffmpeg",
+            "version": "24.08",
+            "add-ld-path": ".",
+            "no-autodownload": false,
+            "autodelete": false
+        },
+        "org.freedesktop.Platform.openh264": {
+            "directory": "lib/openh264",
+            "version": "2.4.1",
+            "add-ld-path": "."
+        }
+    },
+    "cleanup-commands": [
+        "mkdir -p ${FLATPAK_DEST}/lib/ffmpeg",
+        "mkdir -p ${FLATPAK_DEST}/lib/openh264"
+    ],
+    "modules": [
+        "shared-modules/intltool/intltool-0.51.json",
+        "shared-modules/dbus-glib/dbus-glib.json",
+        "shared-modules/libappindicator/libappindicator-gtk3-12.10.json",
+        "shared-modules/libusb/libusb.json",
+        {
+            "name": "xprop",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://xorg.freedesktop.org/archive/individual/app/xprop-1.2.8.tar.xz",
+                    "sha256": "d689e2adb7ef7b439f6469b51cda8a7daefc83243854c2a3b8f84d0f029d67ee",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 14958,
+                        "url-template": "https://xorg.freedesktop.org/archive/individual/app/xprop-$version.tar.xz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "libXmu",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://xorg.freedesktop.org/archive/individual/lib/libXmu-1.2.1.tar.xz",
+                    "sha256": "fcb27793248a39e5fcc5b9c4aec40cc0734b3ca76aac3d7d1c264e7f7e14e8b2",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 1785,
+                        "url-template": "https://xorg.freedesktop.org/archive/individual/lib/libXmu-$version.tar.xz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "xauth",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://xorg.freedesktop.org/archive/individual/app/xauth-1.1.4.tar.xz",
+                    "sha256": "e9318141464ad7b4dc0f8564a580f0d20f977c85a388cc40d5a766206151c690",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 5253,
+                        "stable-only": true,
+                        "url-template": "https://xorg.freedesktop.org/archive/individual/app/xauth-$version.tar.xz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "libcups",
+            "make-args": [
+                "libs"
+            ],
+            "no-make-install": true,
+            "post-install": [
+                "make install-headers install-libs"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/OpenPrinting/cups/archive/refs/tags/v2.4.12.tar.gz",
+                    "sha256": "7a4d32822b320aa2999b18fdfc4ce5ca9ad204fe6302ff69e6c24b21f8d0eaa0",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 380,
+                        "stable-only": false,
+                        "url-template": "https://github.com/OpenPrinting/cups/archive/refs/tags/v$version.tar.gz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "gtk-vnc",
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.gnome.org/sources/gtk-vnc/1.3/gtk-vnc-1.3.1.tar.xz",
+                    "sha256": "512763ac4e0559d0158b6682ca5dd1a3bd633f082f5e4349d7158e6b5f80f1ce",
+                    "x-checker-data": {
+                        "type": "gnome",
+                        "name": "gtk-vnc",
+                        "stable-only": false
+                    }
+                }
+            ]
+        },
+        {
+            "name": "vte",
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/GNOME/vte.git",
+                    "tag": "0.76.3",
+                    "commit": "036bc3ddcbb56f05c6ca76712a53b89dee1369e2",
+                    "x-checker-data": {
+                        "type": "git",
+                        "tag-pattern": "^([\\d.]+)$"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "avahi",
+            "cleanup": [
+                "/bin",
+                "/lib/avahi",
+                "/share/applications/*.desktop",
+                "/share/avahi"
+            ],
+            "config-opts": [
+                "--with-distro=none",
+                "--disable-gobject",
+                "--disable-introspection",
+                "--disable-qt3",
+                "--disable-qt4",
+                "--disable-qt5",
+                "--disable-gtk",
+                "--disable-core-docs",
+                "--disable-manpages",
+                "--disable-libdaemon",
+                "--disable-python",
+                "--disable-pygobject",
+                "--disable-mono",
+                "--disable-monodoc",
+                "--disable-autoipd",
+                "--disable-doxygen-doc",
+                "--disable-doxygen-dot",
+                "--disable-doxygen-xml",
+                "--disable-doxygen-html",
+                "--disable-manpages",
+                "--disable-xmltoman"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.avahi.org/download/avahi-0.8.tar.gz",
+                    "sha256": "060309d7a333d38d951bc27598c677af1796934dbd98e1024e7ad8de798fedda",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 147,
+                        "url-template": "https://www.avahi.org/download/avahi-$version.tar.gz"
+                    }
+                }
+            ],
+            "modules": [
+                {
+                    "name": "libevent",
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://github.com/libevent/libevent/releases/download/release-2.1.12-stable//libevent-2.1.12-stable.tar.gz",
+                            "sha256": "92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 1606,
+                                "url-template": "https://github.com/libevent/libevent/releases/download/release-$version-stable//libevent-$version-stable.tar.gz"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "pcsc",
+            "config-opts": [
+                "--disable-libsystemd",
+                "--enable-pic",
+                "--disable-libusb",
+                "--enable-shared",
+                "--with-systemdsystemunitdir=/app/lib/systemd/"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/LudovicRousseau/PCSC.git",
+                    "tag": "pcsc-1.9.0",
+                    "commit": "e796a0f12fbefa459bff0d25e27089615fa91f21",
+                    "x-checker-data": {
+                        "type": "git",
+                        "tag-pattern": "^pcsc-([\\d.]+)$"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "spice-gtk",
+            "buildsystem": "meson",
+            "build-options": {
+                "env": {
+                    "PYTHONPATH": "/app"
+                }
+            },
+            "config-opts": [
+                "-Dvapi=enabled",
+                "-Dwebdav=disabled",
+                "-Dgtk_doc=disabled"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.spice-space.org/download/gtk/spice-gtk-0.42.tar.xz",
+                    "sha256": "9380117f1811ad1faa1812cb6602479b6290d4a0d8cc442d44427f7f6c0e7a58",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 11576,
+                        "url-template": "https://www.spice-space.org/download/gtk/spice-gtk-$version.tar.xz"
+                    }
+                },
+                {
+                    "type": "patch",
+                    "path": "patches/spice-no-polkit-action.patch"
+                }
+            ],
+            "modules": [
+                {
+                    "name": "python-pyparsing",
+                    "buildsystem": "simple",
+                    "build-commands": [
+                        "pip3 install --verbose --exists-action=i --no-index --find-links=file://${PWD} --prefix=${FLATPAK_DEST} pyparsing --no-build-isolation"
+                    ],
+                    "sources": [
+                        {
+                            "type": "file",
+                            "url": "https://files.pythonhosted.org/packages/05/e7/df2285f3d08fee213f2d041540fa4fc9ca6c2d44cf36d3a035bf2a8d2bcc/pyparsing-3.2.3-py3-none-any.whl",
+                            "sha256": "a749938e02d6fd0b59b356ca504a24982314bb090c383e3cf201c95ef7e2bfcf",
+                            "x-checker-data": {
+                                "type": "pypi",
+                                "name": "pyparsing",
+                                "packagetype": "bdist_wheel"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "libcacard",
+                    "buildsystem": "meson",
+                    "config-opts": [
+                        "-Dpcsc=enabled",
+                        "-Ddisable_tests=true"
+                    ],
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://www.spice-space.org/download/libcacard/libcacard-2.8.1.tar.xz",
+                            "sha256": "fbbf4de8cb7db5bdff5ecb672ff0dbe6939fb9f344b900d51ba6295329a332e7",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 18776,
+                                "url-template": "https://www.spice-space.org/download/libcacard/libcacard-$version.tar.xz"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "lz4",
+                    "subdir": "lib",
+                    "no-autogen": true,
+                    "make-args": [
+                        "lib"
+                    ],
+                    "make-install-args": [
+                        "PREFIX=${FLATPAK_DEST}"
+                    ],
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://github.com/lz4/lz4/archive/v1.10.0/lz4-1.10.0.tar.gz",
+                            "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 1865,
+                                "url-template": "https://github.com/lz4/lz4/archive/v$version/lz4-$version.tar.gz"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "phodav",
+                    "buildsystem": "meson",
+                    "cleanup": [
+                        "/bin",
+                        "/sbin"
+                    ],
+                    "config-opts": [
+                        "-Dgtk_doc=disabled"
+                    ],
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://download.gnome.org/sources/phodav/3.0/phodav-3.0.tar.xz",
+                            "sha256": "392ec2d06d50300dcff1ef269a2a985304e29bce3520002fca29f2edc1d138d1",
+                            "x-checker-data": {
+                                "type": "gnome",
+                                "name": "phodav",
+                                "stable-only": false
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "spice-protocol",
+                    "buildsystem": "meson",
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://www.spice-space.org/download/releases/spice-protocol-0.14.4.tar.xz",
+                            "sha256": "04ffba610d9fd441cfc47dfaa135d70096e60b1046d2119d8db2f8ea0d17d912",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 14892,
+                                "url-template": "https://www.spice-space.org/download/releases/spice-protocol-$version.tar.xz"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "usbredir",
+                    "buildsystem": "meson",
+                    "config-opts": [
+                        "-Dtools=disabled",
+                        "-Dgit_werror=disabled"
+                    ],
+                    "sources": [
+                        {
+                            "type": "git",
+                            "url": "https://gitlab.freedesktop.org/spice/usbredir.git",
+                            "commit": "5fc0e1c43194d948545941d408f4c10d084eb6ed"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "libsodium",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz",
+                    "sha256": "ebb65ef6ca439333c2bb41a0c1990587288da07f6c7fd07cb3a18cc18d30ce19",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 1728,
+                        "url-template": "https://download.libsodium.org/libsodium/releases/libsodium-$version.tar.gz"
+                    }
+                }
+            ],
+            "post-install": [
+                "install -Dm644 LICENSE ${FLATPAK_DEST}/share/licenses/libsodium/LICENSE"
+            ]
+        },
+        {
+            "name": "libssh",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE:STRING=Release",
+                "-DWITH_NACL:BOOL=ON",
+                "-DNACL_INCLUDE_DIR:PATH=/app/include/",
+                "-DWITH_EXAMPLES:BOOL=OFF",
+                "-DWITH_GCRYPT:BOOL=ON"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.libssh.org/files/0.11/libssh-0.11.1.tar.xz",
+                    "sha256": "14b7dcc72e91e08151c58b981a7b570ab2663f630e7d2837645d5a9c612c1b79",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 1729,
+                        "url-template": "https://www.libssh.org/files/0.11/libssh-$version.tar.xz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "libvncserver",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE:STRING=Release",
+                "-DWITH_EXAMPLES:BOOL=OFF",
+                "-DWITH_TESTS:BOOL=OFF"
+            ],
+            "cleanup": [
+                "/bin",
+                "/lib/libvncserver.so*"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/LibVNC/libvncserver/archive/LibVNCServer-0.9.14.tar.gz",
+                    "sha256": "83104e4f7e28b02f8bf6b010d69b626fae591f887e949816305daebae527c9a5",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 1756,
+                        "url-template": "https://github.com/LibVNC/libvncserver/archive/LibVNCServer-$version.tar.gz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "curl",
+            "buildsystem": "autotools",
+            "cleanup": [],
+            "config-opts": [
+                "--with-openssl"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/curl/curl/releases/download/curl-7_81_0/curl-7.81.0.tar.xz",
+                    "sha256": "a067b688d1645183febc31309ec1f3cdce9213d02136b6a6de3d50f69c95a7d3"
+                }
+            ]
+        },
+        {
+            "builddir": true,
+            "buildsystem": "cmake-ninja",
+            "cleanup": [],
+            "config-opts": [
+                "-DCMAKE_VERBOSE_MAKEFILE=ON",
+                "-DCMAKE_BUILD_TYPE:STRING=Release",
+                "-DCMAKE_INSTALL_LIBDIR:PATH=lib",
+                "-DENABLE_CJSON_TEST:BOOL=OFF",
+                "-DENABLE_CJSON_UTILS:BOOL=OFF"
+            ],
+            "name": "cjson",
+            "sources": [
+                {
+                    "sha256": "3aa806844a03442c00769b83e99970be70fbef03735ff898f4811dd03b9f5ee5",
+                    "type": "archive",
+                    "url": "https://github.com/DaveGamble/cJSON/archive/refs/tags/v1.7.18.tar.gz",
+                    "x-checker-data": {
+                        "project-id": 21330,
+                        "stable-only": true,
+                        "type": "anitya",
+                        "url-template":
+                            "https://github.com/DaveGamble/cJSON/archive/refs/tags/v${version0}.${version1}.${version2}.tar.gz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "freerdp",
+            "buildsystem": "cmake-ninja",
+            "cleanup": [],
+            "config-opts": [
+                "-DCMAKE_VERBOSE_MAKEFILE=ON",
+                "-DCMAKE_BUILD_TYPE:STRING=Release",
+                "-DCMAKE_INSTALL_LIBDIR:PATH=lib",
+                "-DWITH_WAYLAND:BOOL=ON",
+                "-DCHANNEL_TSMF:BOOL=OFF",
+                "-DCHANNEL_URBDRC:BOOL=ON",
+                "-DBUILD_TESTING:BOOL=OFF",
+                "-DWITH_MANPAGES:BOOL=OFF",
+                "-DWITH_GSSAPI:BOOL=OFF",
+                "-DWITH_PCSC:BOOL=ON",
+                "-DWITH_SWSCALE:BOOL=ON",
+                "-DWITH_SERVER:BOOL=OFF",
+                "-DWITH_SAMPLE:BOOL=OFF",
+                "-DWITH_CUPS:BOOL=ON",
+                "-DWITH_FFMPEG:BOOL=ON",
+                "-DWITH_OSS:BOOL=OFF",
+                "-DWITH_PULSE:BOOL=ON",
+                "-DWITH_LIBSYSTEMD:BOOL=OFF",
+                "-DWITH_FUSE:BOOL=OFF",
+                "-DWITH_WEBVIEW:BOOL=OFF",
+                "-DWITH_PKCS11:BOOL=ON",
+                "-DWITH_WINPR_JSON:BOOL=ON",
+                "-DWITH_AAD:BOOL=ON",
+                "-DALLOW_IN_SOURCE_BUILD=ON"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/FreeRDP/FreeRDP.git",
+                    "tag": "3.15.0",
+                    "commit": "0ce68ddd1cd6ed067392a17d9858c739f2bf37ec",
+                    "x-checker-data": {
+                        "type": "git",
+                        "tag-pattern": "^([\\d.]+)$"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "remmina",
+            "buildsystem": "cmake-ninja",
+            "cleanup": [
+                "/bin/remmina-gnome",
+                "/bin/gnome-session-remmina",
+                "/share/applications/remmina-gnome.desktop"
+            ],
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE:STRING=Release",
+                "-DCMAKE_INSTALL_LIBDIR:PATH=lib",
+                "-DWITH_FREERDP3:BOOL=ON",
+                "-DWITH_GVNC:BOOL=ON",
+                "-DWITH_CUPS:BOOL=ON",
+                "-DWITH_PYTHONLIBS:BOOL=ON",
+                "-DWITH_MANPAGES:BOOL=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.com/Remmina/Remmina.git",
+                    "branch": "master"
+                }
+            ]
+        }
+    ]
+}

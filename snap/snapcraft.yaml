@@ -1,0 +1,312 @@
+name: remmina
+version: git
+adopt-info: remmina
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+
+base: core22
+grade: stable
+confinement: strict
+
+# this line enables LZO compression for the snap
+compression: lzo
+
+slots:
+  dbus-daemon:
+    interface: dbus
+    bus: session
+    name: org.remmina.Remmina
+
+plugs:
+  kerberos-config:
+    interface: system-files
+    read:
+    - /etc/krb5.conf
+    - /etc/krb5.conf.d
+
+environment:
+  SSH_AUTH_SOCK:    "${SNAP_DATA}/ssh-agent.socket"
+  SNAP_USER_DATA:   "${SNAP_REAL_HOME}/snap/${SNAP_NAME}/current"
+
+apps:
+  remmina:
+    command: usr/bin/remmina
+    extensions: [gnome]
+    common-id: org.remmina.Remmina
+    desktop: usr/share/applications/org.remmina.Remmina.desktop
+    plugs:
+      - alsa
+      - audio-playback
+      - audio-record
+      - avahi-observe
+      - browser-support
+      - cups-control
+      - home
+      - media-hub
+      - mount-observe
+      - network
+      - network-bind
+      - optical-drive
+      - password-manager-service
+      - process-control
+      - raw-usb
+      - removable-media
+      - screen-inhibit-control
+      - ssh-keys
+      - ssh-public-keys
+      - unity7
+      - kerberos-tickets
+      - kerberos-config
+    slots:
+      - dbus-daemon
+
+  ssh-agent:
+    command: usr/bin/ssh-agent -D -a $SSH_AUTH_SOCK
+    daemon: simple
+    # adapter: none
+    plugs:
+      - home
+      - network-bind
+      - ssh-keys
+
+
+parts:
+
+  tools:
+    plugin: nil
+    stage-packages:
+      - openssh-client
+
+  pyhoca:
+    plugin: nil
+    stage-packages:
+      - pyhoca-cli
+
+  freerdp:
+    plugin: cmake
+    source: https://github.com/FreeRDP/FreeRDP.git
+    source-tag: 3.14.1
+    source-depth: 1
+    # override-build: |
+    #   current_dir=$PWD
+    #   cd "$SNAPCRAFT_PART_SRC"
+    #   git apply --verbose "$SNAPCRAFT_STAGE/0003-Fixed-6298-Mask-CACHED_BRUSH-when-checking-brush-sty.patch"
+    #   git apply --verbose "$SNAPCRAFT_STAGE/0001-Fix-seeking-in-Cache-Brush-and-other-Secondary-Drawi.patch"
+    #   cd "$current_dir"
+    #   snapcraftctl build
+    build-packages:
+      - libasound2-dev
+      - libavcodec-dev
+      - libavutil-dev
+      - libcups2-dev
+      - libffi-dev
+      - libnacl-dev
+      - libpcsclite-dev
+      - libpulse-dev
+      - libsecret-1-dev
+      - libssl-dev
+      - libx11-dev
+      - libusb-1.0-0-dev
+      - libxkbfile-dev
+      - libxv-dev
+      - libfuse3-dev
+      - libkrb5-dev
+      - libpkcs11-helper1-dev
+      - libswscale-dev
+    stage-packages:
+      - libffi7
+      - libusb-1.0-0
+      - libzvbi0
+      - x11-utils
+      - libfuse3-3
+      - libkrb5-3
+      - libpkcs11-helper1
+      - libswscale5
+    cmake-parameters:
+      # Workaround for ubuntu 18.04 armhf: build fails with "unable to find a register to spill"
+      # remember to remove when snapcraft will be built in ubuntu >= 20.04
+      # This must be at the beginning
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DWITH_ICU=on
+      - -DWITH_WAYLAND=on
+      - -DCHANNEL_TSMF=off
+      - -DCHANNEL_URBDRC=on
+      - -DBUILD_TESTING=off
+      - -DWITH_MANPAGES=off
+      - -DWITH_GSSAPI=off
+      - -DWITH_SAMPLE=off
+      - -DWITH_SERVER=off
+      - -DWITH_DSP_FFMPEG=on
+      - -DWITH_OSS=off
+      - -DWITH_PULSE=on
+      - -DWITH_GSTREAMER=off
+      - -DWITH_FFMPEG=on
+      - -DWITH_CHANNELS=on
+      - -DBUILTIN_CHANNELS=on
+      - -DWITH_CUPS=on
+      - -DWITH_PCSC=on
+      - -DWITH_JPEG=on
+      - -DWITH_LIBSYSTEMD=off
+      # - -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+
+      # XXX: This is an hack to have a kind of bind-mount with absolute prefix.
+      - -DCMAKE_INSTALL_PREFIX=/snap/$CRAFT_PROJECT_NAME/current/usr
+
+    organize:
+      snap/remmina/current/usr: usr
+
+    prime:
+      - -usr/include
+      - -usr/lib/cmake
+      - -usr/lib/pkgconfig
+      # after:
+      # - patches
+
+    # patches:
+    #   source: snap/local/patches
+    #   plugin: dump
+    #   prime:
+    #     - -*
+
+  remmina:
+    after:
+      - freerdp
+    plugin: cmake
+    source: .
+    parse-info: [usr/share/metainfo/org.remmina.Remmina.appdata.xml]
+    build-packages:
+      - intltool
+      - libappindicator3-dev
+      - libavahi-ui-gtk3-dev
+      - libsecret-1-dev
+      - libgtk-3-dev
+      - libgtk-vnc-2.0-dev
+      - libgvnc-1.0-dev
+      - libjson-glib-dev
+      - libkf5wallet-dev
+      - libsodium-dev
+      - libcurl4-openssl-dev
+      - libspice-client-gtk-3.0-dev
+      - libspice-protocol-dev
+      - libssh-dev
+      - libssl3
+      - libvncserver-dev
+      - libvte-2.91-dev
+      - libwebkit2gtk-4.0-dev
+      - libxkbfile-dev
+      - python3-dev
+      - pyhoca-cli
+      - xdg-utils
+    stage-packages:
+      - libdouble-conversion3
+      - libgtk-vnc-2.0-0
+      - libgvnc-1.0-0
+      - libkf5configcore5
+      - libkf5wallet5
+      - libkf5windowsystem5
+      - libqt5core5a
+      - libqt5dbus5
+      - libqt5gui5
+      - libqt5widgets5
+      - libqt5x11extras5
+      - libssh-4
+      - libusb-1.0-0
+      - libvte-2.91-0
+      - libxcb-keysyms1
+      - libzvbi0
+      - openssh-client
+      - pyhoca-cli
+      - spice-client-glib-usb-acl-helper
+      - suckless-tools
+      - vim
+      - xauth
+      - xterm
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DWITH_FREERDP3=ON
+      - -DWITH_KF5WALLET=ON
+      - -DWITH_GVNC=ON
+      - -DWITH_X2GO=ON
+      - -DWITH_PYTHON=ON
+      - -DSNAP_BUILD=on
+
+      # XXX: This is an hack to have a kind of bind-mount with absolute prefix.
+      - -DCMAKE_INSTALL_PREFIX=/snap/$CRAFT_PROJECT_NAME/current/usr
+
+    build-environment:
+      - CMAKE_PREFIX_PATH: $CRAFT_STAGE/usr
+
+
+    organize:
+      snap/remmina/current/usr: usr
+    stage:
+      - -usr/share/fonts/**
+    prime:
+      - -usr/lib/pkgconfig
+      - -usr/include
+
+    override-build: |
+      set -eu
+      craftctl default
+
+      cp -r $CRAFT_PART_INSTALL/snap/$CRAFT_PROJECT_NAME/current/usr/share/metainfo $CRAFT_PART_INSTALL/usr/share/
+      sed --in-place '\|<id>org.remmina.Remmina</id>|a<icon type="stock">snap.remmina.org.remmina.Remmina</icon>' $CRAFT_PART_INSTALL/snap/$CRAFT_PROJECT_NAME/current/usr/share/metainfo/org.remmina.Remmina.appdata.xml
+      update-mime-database ${CRAFT_PART_INSTALL}/usr/share/mime
+
+    override-prime: |
+      set -eu
+      craftctl default
+      # Remove forbidden links (I'm sure the audio won't work anymore)
+      rm -f etc/pulse/client.conf.d/01-enable-autospawn.conf lib/systemd/system/pulseaudio-enable-autospawn.service
+
+  app:
+    plugin: nil
+    stage-packages:
+      - libindicator3-7
+      - libavahi-ui-gtk3-0
+      - libxkbfile1
+      - libvncclient1
+      - libavcodec58
+      - libavcodec-extra
+      - libspice-client-glib-2.0-8
+      - libspice-client-gtk-3.0-5
+      - libavutil56
+      - libswresample3
+      - libcacard0
+      - libzvbi0
+      - libxvidcore4
+      - libusbredirhost1
+      - libx265-199
+      - libusbredirparser1
+      - libx264-163
+      - libphodav-2.0-0
+      - libsnappy1v5
+      - libshine3
+      - libgsm1
+      - libvdpau1
+      - libsoxr0
+      - libnuma1
+      - libsodium23
+      - libusb-1.0-0
+    prime:
+      - -usr/share/doc
+      - -usr/share/doc-base
+      - -usr/share/pkgconfig
+      - -usr/lib/pkgconfig
+      - -usr/lib/*/pkgconfig
+  cleanup:
+    after: [freerdp, remmina, app]  
+    plugin: nil
+    build-snaps: [core22, gnome-42-2204, gtk-common-themes]  # List all content-snaps you're using here
+    override-prime: |
+      set -eux
+      for snap in "core22" "gnome-42-2204" "gtk-common-themes"; do  # List all content-snaps you're using here
+        cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$CRAFT_PRIME/{}" \;
+      done
+      for CRUFT in bug lintian man; do
+        rm -rf $CRAFT_PRIME/usr/share/$CRUFT
+      done
+      find $CRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
+      find $CRAFT_PRIME/usr/share -type d -empty -delete

@@ -1,0 +1,7 @@
+FROM fedora:44
+RUN dnf install -y rpm-build rpmdevtools cmake gcc gcc-c++ gettext intltool pkgconf-pkg-config \
+ gtk3-devel libssh-devel vte291-devel libsodium-devel json-glib-devel libsecret-devel \
+ avahi-gobject-devel avahi-ui-devel libayatana-appindicator-gtk3-devel freerdp-devel libvncserver-devel \
+ spice-gtk3-devel libcurl-devel libsoup3-devel pcre2-devel libxkbfile-devel openssl-devel \
+ cups-devel webkit2gtk4.1-devel gnutls-devel libgcrypt-devel desktop-file-utils && dnf clean all
+RUN dnf install -y winpr-tools 2>/dev/null || dnf install -y /usr/bin/winpr-makecert; dnf clean all
