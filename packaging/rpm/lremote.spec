@@ -1,6 +1,6 @@
 Name:           lremote
 Version:        0.1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        mRemoteNG-style remote connections manager built on the Remmina engine
 License:        GPL-2.0-or-later
 URL:            https://github.com/mpjsilva/lRemote
