@@ -1,6 +1,6 @@
 Name:           lremote
 Version:        0.1.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        mRemoteNG-style remote connections manager built on the Remmina engine
 License:        GPL-2.0-or-later
 URL:            https://github.com/mpjsilva/lRemote
@@ -17,7 +17,7 @@ BuildRequires:  pkgconfig(webkit2gtk-4.1) pkgconfig(gnutls) libgcrypt-devel desk
 Source1:        bundle-libs.sh
 # Self-contained: every library ships inside the package
 AutoReqProv:    no
-Requires:       glibc
+Requires:       glibc fontconfig
 %global __provides_exclude_from ^/usr/lib64/lremote/.*$
 %global debug_package %{nil}
 %global __brp_check_rpaths %{nil}
@@ -59,6 +59,9 @@ chmod 755 %{buildroot}%{_bindir}/lremote
 %{_mandir}/man1/*
 
 %changelog
+* Mon Nov 16 2026 mpjsilva - 0.1.0-6
+- Use the system fontconfig; fix web and VNC plugin symbols; quieter start.
+
 * Mon Nov 16 2026 mpjsilva - 0.1.0-5
 - mRemoteNG import: accept <mrng:Connections>, keep duplicate connections.
 

@@ -6,7 +6,7 @@ set -e
 ROOT=$1
 DEST=$ROOT/usr/lib64/lremote/lib
 mkdir -p "$DEST"
-SKIP='^(ld-linux|libc\.|libm\.|libdl\.|libpthread\.|librt\.|libresolv\.|libutil\.|libGL|libEGL|libGLX|libGLdispatch|libgbm|libvulkan|libwebkit2gtk|libjavascriptcoregtk)'
+SKIP='^(ld-linux|libc\.|libm\.|libdl\.|libpthread\.|librt\.|libresolv\.|libutil\.|libGL|libEGL|libGLX|libGLdispatch|libgbm|libfontconfig|libvulkan|libwebkit2gtk|libjavascriptcoregtk)'
 BINS="$ROOT/usr/lib64/lremote/lremote-bin $(ls $ROOT/usr/lib64/lremote/plugins/*.so)"
 for f in $BINS; do
   # the web plugin keeps using the system WebKitGTK; it is skipped if missing
