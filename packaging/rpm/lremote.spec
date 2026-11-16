@@ -1,6 +1,6 @@
 Name:           lremote
 Version:        0.1.0
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        mRemoteNG-style remote connections manager built on the Remmina engine
 License:        GPL-2.0-or-later
 URL:            https://github.com/mpjsilva/lRemote
@@ -14,7 +14,13 @@ BuildRequires:  pkgconfig(freerdp3) pkgconfig(winpr3) pkgconfig(libvncserver)
 BuildRequires:  pkgconfig(spice-client-gtk-3.0) pkgconfig(libcurl) pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(libpcre2-8) pkgconfig(xkbfile) pkgconfig(openssl) pkgconfig(cups)
 BuildRequires:  pkgconfig(webkit2gtk-4.1) pkgconfig(gnutls) libgcrypt-devel desktop-file-utils
-Requires:       hicolor-icon-theme
+Source1:        bundle-libs.sh
+# Self-contained: every library ships inside the package
+AutoReqProv:    no
+Requires:       glibc
+%global __provides_exclude_from ^/usr/lib64/lremote/.*$
+%global debug_package %{nil}
+%global __brp_check_rpaths %{nil}
 
 %description
 lRemote manages RDP, VNC, SPICE, SSH and web connections in a tree of
@@ -31,6 +37,15 @@ engine. It imports mRemoteNG confCons.xml files and Remmina profiles.
 
 %install
 %cmake_install
+mv %{buildroot}%{_bindir}/lremote %{buildroot}%{_libdir}/lremote/lremote-bin
+bash %{SOURCE1} %{buildroot}
+cat > %{buildroot}%{_bindir}/lremote <<'WRAP'
+#!/bin/sh
+export LD_LIBRARY_PATH=/usr/lib64/lremote/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+export XDG_DATA_DIRS=${XDG_DATA_DIRS:-/usr/local/share:/usr/share}:/usr/lib64/lremote/share
+exec /usr/lib64/lremote/lremote-bin "$@"
+WRAP
+chmod 755 %{buildroot}%{_bindir}/lremote
 %find_lang %{name}
 
 %files -f %{name}.lang
@@ -44,5 +59,8 @@ engine. It imports mRemoteNG confCons.xml files and Remmina profiles.
 %{_mandir}/man1/*
 
 %changelog
+* Mon Nov 16 2026 mpjsilva - 0.1.0-2
+- Self-contained package: all libraries and icon themes bundled.
+- Fix SPICE plugin failing to load.
 * Mon Nov 16 2026 mpjsilva - 0.1.0-1
 - First release: mRemoteNG-style window, mRemoteNG and Remmina import, pt_BR.
