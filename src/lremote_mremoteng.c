@@ -323,6 +323,19 @@ static void mrng_import_connection(MrngParser *p, MrngNode *node, MrngNode *pare
 	p->stats->imported++;
 }
 
+/* mRemoteNG 1.77+ writes the root as <mrng:Connections>; ignore any namespace prefix */
+static const gchar *mrng_local(const gchar *element)
+{
+	const gchar *c = strchr(element, ':');
+	return c ? c + 1 : element;
+}
+
+static gchar *mrng_find_root(const gchar *xml, gssize len)
+{
+	gchar *r = g_strstr_len(xml, len, "<Connections");
+	return r ? r : g_strstr_len(xml, len, "<mrng:Connections");
+}
+
 static void mrng_start_element(GMarkupParseContext *ctx, const gchar *element, const gchar **names,
 			       const gchar **values, gpointer user_data, GError **error)
 {
@@ -330,7 +343,7 @@ static void mrng_start_element(GMarkupParseContext *ctx, const gchar *element, c
 	MrngNode *node, *parent;
 	const gchar *type;
 
-	if (g_strcmp0(element, "Connections") == 0) {
+	if (g_strcmp0(mrng_local(element), "Connections") == 0) {
 		gint i;
 		node = mrng_node_new(names, values);
 		node->container = TRUE;
@@ -346,7 +359,7 @@ static void mrng_start_element(GMarkupParseContext *ctx, const gchar *element, c
 		g_queue_push_head(p->stack, node);
 		return;
 	}
-	if (g_strcmp0(element, "Node") != 0)
+	if (g_strcmp0(mrng_local(element), "Node") != 0)
 		return;
 
 	parent = g_queue_peek_head(p->stack);
@@ -369,7 +382,7 @@ static void mrng_end_element(GMarkupParseContext *ctx, const gchar *element, gpo
 {
 	MrngParser *p = user_data;
 
-	if (g_strcmp0(element, "Node") == 0 || g_strcmp0(element, "Connections") == 0)
+	if (g_strcmp0(mrng_local(element), "Node") == 0 || g_strcmp0(mrng_local(element), "Connections") == 0)
 		mrng_node_free(g_queue_pop_head(p->stack));
 }
 
@@ -409,7 +422,7 @@ static gboolean mrng_probe_root(MrngParser *p, const gchar *xml, gsize len, GErr
 	gchar **parts;
 	gint i;
 
-	start = g_strstr_len(xml, len, "<Connections");
+	start = mrng_find_root(xml, len);
 	if (!start) {
 		g_set_error_literal(error, lremote_mrng_quark(), 4, _("This is not an mRemoteNG connections file."));
 		return FALSE;
@@ -500,9 +513,9 @@ gboolean lremote_mremoteng_import(const gchar *path, const gchar *password, Lrem
 	p.full_file_text = g_string_new("");
 
 	/* Before 2.6, full file encryption wrote the whole document as one base64 blob */
-	if (!g_strstr_len(xml, len, "<Connections")) {
+	if (!mrng_find_root(xml, len)) {
 		gchar *plain = lremote_mrng_decrypt_legacy(g_strstrip(xml), p.password, NULL);
-		if (plain && g_strstr_len(plain, -1, "<Connections")) {
+		if (plain && mrng_find_root(plain, -1)) {
 			g_free(xml);
 			xml = plain;
 			len = strlen(xml);
