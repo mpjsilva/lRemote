@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: remmina\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-16 12:57+0000\n"
+"POT-Creation-Date: 2026-11-16 17:06+0000\n"
 "PO-Revision-Date: 2026-01-07 12:01+0000\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -26,402 +26,159 @@ msgstr ""
 "X-Generator: Weblate 5.15.1\n"
 "X-Launchpad-Export-Date: 2014-04-10 15:04+0000\n"
 
-#: src/remmina.c:140
-msgid "Import an mRemoteNG connections file (confCons.xml) and quit"
-msgstr "Importa um arquivo de conexões do mRemoteNG (confCons.xml) e sai"
+#: src/remmina_icon.c:179 src/lremote_window.c:1643
+msgid "Check for _updates"
+msgstr "Verificar _atualizações"
 
-#: src/remmina.c:142
-msgid "Master password of the mRemoteNG file (default: mR3m)"
-msgstr "Senha mestra do arquivo do mRemoteNG (padrão: mR3m)"
+#: src/remmina_icon.c:184
+msgid "_Restore"
+msgstr "_Restaurar"
 
-#: src/remmina.c:142
-msgid "PASSWORD"
-msgstr "SENHA"
-
-#: src/lremote_crypto.c:71
-msgid "A password is required."
-msgstr "É preciso informar uma senha."
-
-#: src/lremote_crypto.c:78
-msgid "The encrypted value is too short."
-msgstr "O valor cifrado é curto demais."
-
-#: src/lremote_crypto.c:84
-msgid "Key derivation failed."
-msgstr "Falha ao derivar a chave."
-
-#: src/lremote_crypto.c:107 src/lremote_crypto.c:153
-msgid "Wrong password or corrupted data."
-msgstr "Senha incorreta ou dados corrompidos."
-
-#: src/lremote_crypto.c:128
-msgid "The encrypted value is malformed."
-msgstr "O valor cifrado está malformado."
-
-#: src/lremote_mremoteng.c:397
-msgid "Wrong master password."
-msgstr "Senha mestra incorreta."
-
-#: src/lremote_mremoteng.c:414
-msgid "This is not an mRemoteNG connections file."
-msgstr "Este não é um arquivo de conexões do mRemoteNG."
-
-#: src/lremote_mremoteng.c:450
+#: src/remmina_exec.c:130
 msgid ""
-"This file is protected with Windows DPAPI and can only be opened on the "
-"Windows account that saved it. In mRemoteNG, set a master password and save "
-"the file again."
+"Quit lRemote?\n"
+"Open connections will be closed."
 msgstr ""
-"Este arquivo está protegido com o DPAPI do Windows e só abre na conta do "
-"Windows que o salvou. No mRemoteNG, defina uma senha mestra e salve o "
-"arquivo de novo."
+"Sair do lRemote?\n"
+"As conexões abertas serão fechadas."
 
-#: src/lremote_mremoteng.c:456
+#: src/lremote_update.c:102 src/lremote_update.c:397
+msgid "Updates"
+msgstr "Atualizações"
+
+#: src/lremote_update.c:268
+#, c-format
+msgid "The server answered with code %ld."
+msgstr "O servidor respondeu com o código %ld."
+
+#: src/lremote_update.c:296
 #, c-format
 msgid ""
-"Unsupported encryption %s/%s. In mRemoteNG, choose AES with GCM and save the "
-"file again."
+"The package was saved to %s. You can install it with:\n"
+"sudo dnf install %s"
 msgstr ""
-"Criptografia %s/%s não suportada. No mRemoteNG, escolha AES com GCM e salve "
-"o arquivo de novo."
+"O pacote foi salvo em %s. Você pode instalá-lo com:\n"
+"sudo dnf install %s"
 
-#: src/lremote_mremoteng.c:515
-msgid "Wrong master password, or this is not an mRemoteNG connections file."
-msgstr ""
-"Senha mestra incorreta, ou este não é um arquivo de conexões do mRemoteNG."
+#: src/lremote_update.c:298 src/lremote_update.c:345
+msgid "The update was not installed."
+msgstr "A atualização não foi instalada."
 
-#: src/lremote_window.c:497
+#: src/lremote_update.c:307
 #, c-format
-msgid "%d connections in %d folders"
-msgstr "%d conexões em %d pastas"
+msgid "lRemote %s was installed."
+msgstr "O lRemote %s foi instalado."
 
-#: src/lremote_window.c:575
-msgid "(top level)"
-msgstr "(raiz)"
+#: src/lremote_update.c:309
+msgid "Restart now to use the new version. Open connections will be closed."
+msgstr ""
+"Reinicie agora para usar a versão nova. As conexões abertas serão fechadas."
 
-#: src/lremote_window.c:611
-msgid "no server"
-msgstr "sem servidor"
+#: src/lremote_update.c:310
+msgid "_Later"
+msgstr "_Depois"
 
-#: src/lremote_window.c:617
+#: src/lremote_update.c:310
+msgid "_Restart now"
+msgstr "_Reiniciar agora"
+
+#: src/lremote_update.c:331
+msgid "Could not download the update."
+msgstr "Não foi possível baixar a atualização."
+
+#: src/lremote_update.c:336
+#, c-format
+msgid "The package was saved to %s."
+msgstr "O pacote foi salvo em %s."
+
+#: src/lremote_update.c:337
+msgid "Install the downloaded package with your package manager."
+msgstr "Instale o pacote baixado com o gerenciador de pacotes."
+
+#: src/lremote_update.c:366 src/lremote_update.c:369
+msgid "Could not check for updates."
+msgstr "Não foi possível verificar atualizações."
+
+#: src/lremote_update.c:367
+msgid ""
+"The lRemote repository is private. Sign in with the GitHub CLI (gh auth "
+"login) on this computer, or make the repository public."
+msgstr ""
+"O repositório do lRemote é privado. Entre com o GitHub CLI (gh auth login) "
+"neste computador, ou torne o repositório público."
+
+#: src/lremote_update.c:370
+msgid "GitHub did not answer as expected."
+msgstr "O GitHub não respondeu como esperado."
+
+#: src/lremote_update.c:380
+#, c-format
+msgid "You have the latest version (%s)."
+msgstr "Você já tem a versão mais recente (%s)."
+
+#: src/lremote_update.c:391
+#, c-format
+msgid "lRemote %s is available."
+msgstr "O lRemote %s está disponível."
+
+#: src/lremote_update.c:393
 #, c-format
 msgid ""
-"%d connections in %d folders. Double-click a connection to open it in a tab."
+"Installed version: %s.\n"
+"Download and install it now? Your administrator password will be asked."
 msgstr ""
-"%d conexões em %d pastas. Clique duas vezes numa conexão para abri-la numa "
-"aba."
+"Versão instalada: %s.\n"
+"Baixar e instalar agora? A senha de administrador será pedida."
 
-#: src/lremote_window.c:635 src/lremote_window.c:1710
-msgid "Folder"
-msgstr "Pasta"
+#: src/lremote_update.c:398
+msgid "_Not now"
+msgstr "_Agora não"
 
-#: src/lremote_window.c:635 src/lremote_window.c:645 src/lremote_window.c:1697
-msgid "Config"
-msgstr "Configuração"
+#: src/lremote_update.c:398
+msgid "_Update"
+msgstr "_Atualizar"
 
-#: src/lremote_window.c:657
-msgid "Saved (type to change)"
-msgstr "Salva (digite para trocar)"
+#: src/lremote_window.c:1621
+msgid "_Minimize to tray on close"
+msgstr "_Minimizar para a bandeja ao fechar"
 
-#: src/lremote_window.c:657
-msgid "Not saved"
-msgstr "Não salva"
-
-#: src/lremote_window.c:778 src/lremote_window.c:1621
-msgid "New connection"
-msgstr "Nova conexão"
-
-#: src/lremote_window.c:784
-msgid "Could not create the connection."
-msgstr "Não foi possível criar a conexão."
-
-#: src/lremote_window.c:806 src/lremote_window.c:1624
-msgid "New folder"
-msgstr "Nova pasta"
-
-#: src/lremote_window.c:806
-msgid "Folder name"
-msgstr "Nome da pasta"
-
-#: src/lremote_window.c:848
-#, c-format
-msgid "%s (copy)"
-msgstr "%s (cópia)"
-
-#: src/lremote_window.c:869
-#, c-format
-msgid "Delete the connection “%s”?"
-msgstr "Excluir a conexão “%s”?"
-
-#: src/lremote_window.c:884
-#, c-format
-msgid "Delete the folder “%s”?"
-msgstr "Excluir a pasta “%s”?"
-
-#: src/lremote_window.c:885
-msgid "Connections inside it are kept and moved to the parent folder."
-msgstr "As conexões dentro dela são mantidas e vão para a pasta acima."
-
-#: src/lremote_window.c:971
-msgid "Rename folder"
-msgstr "Renomear pasta"
-
-#: src/lremote_window.c:971
-msgid "New name"
-msgstr "Novo nome"
-
-#: src/lremote_window.c:998
-msgid "Move to folder"
-msgstr "Mover para pasta"
-
-#: src/lremote_window.c:999
-msgid "_Move"
-msgstr "_Mover"
-
-#: src/lremote_window.c:1003
-msgid "Destination folder"
-msgstr "Pasta de destino"
-
-#: src/lremote_window.c:1068
-msgid "Import from mRemoteNG"
-msgstr "Importar do mRemoteNG"
-
-#: src/lremote_window.c:1071
-msgid "mRemoteNG connections (confCons.xml)"
-msgstr "Conexões do mRemoteNG (confCons.xml)"
-
-#: src/lremote_window.c:1090
-#, c-format
-msgid "%d connections and %d folders were imported."
-msgstr "%d conexões e %d pastas foram importadas."
-
-#: src/lremote_window.c:1093
-#, c-format
-msgid ""
-"%d connections use protocols lRemote does not support yet and were skipped: "
-"%s"
-msgstr ""
-"%d conexões usam protocolos que o lRemote ainda não suporta e foram "
-"ignoradas: %s"
-
-#: src/lremote_window.c:1107
-msgid ""
-"This file is protected with a master password. Type the password set in "
-"mRemoteNG."
-msgstr ""
-"Este arquivo está protegido com senha mestra. Digite a senha definida no "
-"mRemoteNG."
-
-#: src/lremote_window.c:1108
-msgid "Wrong password. Try again."
-msgstr "Senha incorreta. Tente de novo."
-
-#: src/lremote_window.c:1115
-msgid "Could not import the mRemoteNG file."
-msgstr "Não foi possível importar o arquivo do mRemoteNG."
-
-#: src/lremote_window.c:1185
-#, c-format
-msgid "%d connections were copied from Remmina."
-msgstr "%d conexões foram copiadas do Remmina."
-
-#: src/lremote_window.c:1186
-#, c-format
-msgid "%d already existed in lRemote and were kept."
-msgstr "%d já existiam no lRemote e foram mantidas."
-
-#: src/lremote_window.c:1187
-msgid "No Remmina connections were found."
-msgstr "Nenhuma conexão do Remmina foi encontrada."
-
-#: src/lremote_window.c:1196
-msgid "lRemote settings backup"
-msgstr "Backup de configurações do lRemote"
-
-#: src/lremote_window.c:1303
-msgid ""
-"Remote connections manager for Linux, inspired by mRemoteNG and built on the "
-"Remmina engine."
-msgstr ""
-"Gerenciador de conexões remotas para Linux, inspirado no mRemoteNG e feito "
-"sobre o motor do Remmina."
-
-#: src/lremote_window.c:1307
-msgid "Based on Remmina © Antenore Gatta, Giovanni Panozzo and contributors"
-msgstr "Baseado no Remmina © Antenore Gatta, Giovanni Panozzo e colaboradores"
-
-#: src/lremote_window.c:1422 src/lremote_window.c:1641
-#: src/lremote_window.c:1794
-msgid "_Connect"
-msgstr "_Conectar"
-
-#: src/lremote_window.c:1424
-msgid "_Edit (all settings)…"
-msgstr "_Editar (todas as opções)…"
-
-#: src/lremote_window.c:1425
-msgid "D_uplicate"
-msgstr "D_uplicar"
-
-#: src/lremote_window.c:1426
-msgid "_Move to folder…"
-msgstr "_Mover para pasta…"
-
-#: src/lremote_window.c:1430
-msgid "Connect _all"
-msgstr "Conectar _todas"
-
-#: src/lremote_window.c:1432 src/lremote_window.c:1438
-#: src/lremote_window.c:1562 src/lremote_window.c:1802
-msgid "New _connection"
-msgstr "Nova _conexão"
-
-#: src/lremote_window.c:1433 src/lremote_window.c:1439
-#: src/lremote_window.c:1564
-msgid "New _folder"
-msgstr "Nova _pasta"
-
-#: src/lremote_window.c:1434
-msgid "_Rename…"
-msgstr "_Renomear…"
-
-#: src/lremote_window.c:1559
-msgid "_File"
-msgstr "_Arquivo"
-
-#: src/lremote_window.c:1567 src/lremote_window.c:1805
-msgid "Import from _mRemoteNG…"
-msgstr "Importar do _mRemoteNG…"
-
-#: src/lremote_window.c:1568 src/lremote_window.c:1808
-msgid "Import from _Remmina"
-msgstr "Importar do _Remmina"
-
-#: src/lremote_window.c:1570
-msgid "_Export settings…"
-msgstr "_Exportar configurações…"
-
-#: src/lremote_window.c:1571
-msgid "_Import settings…"
-msgstr "_Importar configurações…"
-
-#: src/lremote_window.c:1578
-msgid "_View"
-msgstr "_Exibir"
-
-#: src/lremote_window.c:1581
-msgid "_Theme"
-msgstr "_Tema"
-
-#: src/lremote_window.c:1593
-msgid "_Expand all"
-msgstr "_Expandir tudo"
-
-#: src/lremote_window.c:1594
-msgid "C_ollapse all"
-msgstr "_Recolher tudo"
-
-#: src/lremote_window.c:1603
-msgid "P_lugins"
-msgstr "P_lugins"
-
-#: src/lremote_window.c:1607
-msgid "_Help"
-msgstr "Aj_uda"
-
-#: src/lremote_window.c:1610
-msgid "_About lRemote"
-msgstr "_Sobre o lRemote"
-
-#: src/lremote_window.c:1630
-msgid "Quick connect"
-msgstr "Conexão rápida"
-
-#: src/lremote_window.c:1637
-msgid "server or user@server"
-msgstr "servidor ou usuário@servidor"
-
-#: src/lremote_window.c:1654
-msgid "Search connections"
-msgstr "Buscar conexões"
-
-#: src/lremote_window.c:1715
-msgid "host or host:port"
-msgstr "host ou host:porta"
-
-#: src/lremote_window.c:1726
-msgid "Fit to window"
-msgstr "Ajustar à janela"
-
-#: src/lremote_window.c:1736
-msgid "256 colours (8 bit)"
-msgstr "256 cores (8 bits)"
-
-#: src/lremote_window.c:1737
-msgid "High colour (15 bit)"
-msgstr "High color (15 bits)"
-
-#: src/lremote_window.c:1740
-msgid "True colour (32 bit)"
-msgstr "True color (32 bits)"
-
-#: src/lremote_window.c:1741
-msgid "Colours"
-msgstr "Cores"
-
-#: src/lremote_window.c:1760
-msgid "_All settings…"
-msgstr "_Todas as opções…"
-
-#: src/lremote_window.c:1761
-msgid "Open every setting of this protocol"
-msgstr "Abre todas as opções deste protocolo"
-
-#: src/remmina_icon.c:143
+#: src/remmina_icon.c:150
 msgid "Enable Service Discovery"
 msgstr "Habilitar serviço de descoberta"
 
-#: src/remmina_icon.c:157 src/lremote_window.c:1573
+#: src/remmina_icon.c:164 src/lremote_window.c:1602
 #: data/ui/remmina_main.glade:464
 msgid "_Quit"
 msgstr "_Sair"
 
-#: src/remmina_icon.c:162
+#: src/remmina_icon.c:169
 msgid "_About"
 msgstr "_Sobre"
 
-#: src/remmina_icon.c:167 src/lremote_window.c:1601
+#: src/remmina_icon.c:174 src/lremote_window.c:1634
 #: data/ui/remmina_main.glade:289
 msgid "_Preferences"
 msgstr "_Preferências"
 
-#: src/remmina_icon.c:172
-msgid "Open Main Window"
-msgstr "Abrir janela principal"
-
-#: src/remmina_icon.c:322 src/remmina_icon.c:489
-msgid "Remmina Applet"
-msgstr "Miniaplicativo do Remmina"
-
-#: src/remmina_icon.c:324 src/remmina_icon.c:491
+#: src/remmina_icon.c:336 src/remmina_icon.c:503
 msgid "Connect to remote desktops through the applet menu"
 msgstr "Conecte a áreas de trabalho remotas através do miniaplicativo"
 
-#: src/remmina_icon.c:395
+#: src/remmina_icon.c:407
 msgid "StatusNotifier/Appindicator support in “"
 msgstr "Suporte a StatusNotifier/Appindicator em “"
 
-#: src/remmina_icon.c:402
+#: src/remmina_icon.c:414
 #, c-format
 msgid "%s your desktop does support it"
 msgstr "%s o seu ambiente de trabalho é compatível"
 
-#: src/remmina_icon.c:404
+#: src/remmina_icon.c:416
 #, c-format
 msgid "%s and Remmina has built-in (compiled) support for libappindicator."
 msgstr "%s e Remmina tem suporte embutido (compilado) para o libappindicator."
 
-#: src/remmina_icon.c:407
+#: src/remmina_icon.c:419
 #, c-format
 msgid ""
 "%s not supported natively by your Desktop Environment. libappindicator will "
@@ -430,22 +187,22 @@ msgstr ""
 "%s não possui compatibilidade nativa com o seu ambiente de trabalho. O "
 "libappindicator tentará retornar ao GtkStatusIcon/xembed"
 
-#: src/remmina_icon.c:411
+#: src/remmina_icon.c:423
 #, c-format
 msgid "%s You may need to install, and use XApp Status Applet"
 msgstr "%s Você pode precisar instalar e usar o XApp Status Applet"
 
-#: src/remmina_icon.c:414
+#: src/remmina_icon.c:426
 #, c-format
 msgid "%s You may need to install, and use KStatusNotifierItem"
 msgstr "%s Você pode precisar instalar e usar o KStatusNotifierItem"
 
-#: src/remmina_icon.c:417
+#: src/remmina_icon.c:429
 #, c-format
 msgid "%s You may need to install, and use XEmbed SNI Proxy"
 msgstr "%s Você pode precisar instalar e usar o XEmbed SNI Proxy"
 
-#: src/remmina_icon.c:420
+#: src/remmina_icon.c:432
 #, c-format
 msgid "%s You may need to install, and use Gnome Shell Extension Appindicator"
 msgstr ""
@@ -503,14 +260,6 @@ msgstr "Meta+"
 #: src/remmina_key_chooser.h:46
 msgid "<None>"
 msgstr "<Nenhuma>"
-
-#: src/remmina_exec.c:130
-msgid ""
-"Are you sure you want to fully quit Remmina?\n"
-" This will close any active connections."
-msgstr ""
-"Tem certeza de que deseja encerrar o Remina completamente?\n"
-" Isso fechará todas as conexões ativas."
 
 #: src/remmina_exec.c:525
 #, c-format
@@ -577,7 +326,7 @@ msgstr "Não"
 #: src/remmina_message_panel.c:360 src/remmina_message_panel.c:552
 #: src/remmina_message_panel.c:717 src/remmina_ftp_client.c:411
 #: src/remmina_plugin_manager.c:790 src/remmina_file_editor.c:255
-#: src/lremote_window.c:175
+#: src/lremote_window.c:179
 msgid "_OK"
 msgstr "_OK"
 
@@ -587,10 +336,10 @@ msgstr "_OK"
 #: src/remmina_main.c:1517 src/remmina_main.c:1558 src/remmina_main.c:1594
 #: src/remmina_file_editor.c:254 src/remmina_file_editor.c:957
 #: src/remmina_file_editor.c:961 src/remmina_file_editor.c:2145
-#: src/remmina_sftp_client.c:974 src/lremote_window.c:161
-#: src/lremote_window.c:175 src/lremote_window.c:999 src/lremote_window.c:1069
-#: src/lremote_window.c:1213 src/lremote_window.c:1247
-#: src/lremote_window.c:1259 plugins/spice/spice_plugin_file_transfer.c:84
+#: src/remmina_sftp_client.c:974 src/lremote_window.c:165
+#: src/lremote_window.c:179 src/lremote_window.c:1005 src/lremote_window.c:1075
+#: src/lremote_window.c:1219 src/lremote_window.c:1253
+#: src/lremote_window.c:1265 plugins/spice/spice_plugin_file_transfer.c:84
 #: data/ui/remmina_spinner.glade:8 data/ui/remmina_spinner.glade:9
 #: data/ui/remmina_key_chooser.glade:8 data/ui/remmina_key_chooser.glade:9
 msgid "_Cancel"
@@ -598,14 +347,14 @@ msgstr "_Cancelar"
 
 #: src/remmina_message_panel.c:434 src/remmina_ssh_plugin.c:1607
 #: src/remmina_sftp_plugin.c:352 src/remmina_file_editor.c:1582
-#: src/lremote_window.c:1718 plugins/x2go/x2go_plugin.c:480
+#: src/lremote_window.c:1753 plugins/x2go/x2go_plugin.c:480
 #: plugins/x2go/x2go_plugin.c:3323 plugins/rdp/rdp_plugin.c:3237
 #: plugins/www/www_plugin.c:899 plugins/vnc/vnc_plugin.c:2150
 #: plugins/vnc/vnc_plugin.c:2162 data/ui/remmina_mpc.glade:122
 msgid "Username"
 msgstr "Nome de usuário"
 
-#: src/remmina_message_panel.c:491 src/lremote_window.c:1724
+#: src/remmina_message_panel.c:491 src/lremote_window.c:1759
 #: plugins/rdp/rdp_plugin.c:3239 data/ui/remmina_mpc.glade:151
 msgid "Domain"
 msgstr "Domínio"
@@ -689,7 +438,7 @@ msgstr "Desconectado de %s:%d via SSH"
 #: src/remmina_ssh_plugin.c:1496 src/remmina_sftp_plugin.c:309
 #: src/remmina_sftp_plugin.c:353 src/remmina_protocol_widget.c:1792
 #: src/remmina_protocol_widget.c:1811 src/remmina_file_editor.c:938
-#: src/remmina_file_editor.c:1588 src/lremote_window.c:1722
+#: src/remmina_file_editor.c:1588 src/lremote_window.c:1757
 #: plugins/x2go/x2go_plugin.c:3324 plugins/rdp/rdp_plugin.c:3238
 #: plugins/www/www_plugin.c:900 data/ui/remmina_passwd.glade:68
 #: data/ui/remmina_unlock.glade:98 data/ui/remmina_mpc.glade:218
@@ -1194,8 +943,8 @@ msgstr "Enviar a pasta"
 msgid "Download"
 msgstr "Baixar"
 
-#: src/remmina_ftp_client.c:683 src/lremote_window.c:870
-#: src/lremote_window.c:885 src/lremote_window.c:1428 src/lremote_window.c:1436
+#: src/remmina_ftp_client.c:683 src/lremote_window.c:876
+#: src/lremote_window.c:891 src/lremote_window.c:1434 src/lremote_window.c:1442
 msgid "_Delete"
 msgstr "_Excluir"
 
@@ -1279,7 +1028,7 @@ msgid "Progress"
 msgstr "Progresso"
 
 #: src/remmina_plugin_manager.c:88 src/remmina_file_editor.c:2337
-#: src/lremote_window.c:1713
+#: src/lremote_window.c:1748
 msgid "Protocol"
 msgstr "Protocolo"
 
@@ -1324,7 +1073,7 @@ msgid "Install"
 msgstr "Instalar"
 
 #: src/remmina_plugin_manager.c:1442 src/remmina_plugin_manager.c:1447
-#: src/remmina_file_editor.c:2269 src/lremote_window.c:1708
+#: src/remmina_file_editor.c:2269 src/lremote_window.c:1743
 #: data/ui/remmina_bug_report.glade:128 data/ui/remmina_main.glade:502
 msgid "Name"
 msgstr "Nome"
@@ -1480,7 +1229,7 @@ msgid "Could not authenticate, attempting reconnection…"
 msgstr "Não foi possível autenticar, tentando reconectar…"
 
 #: src/remmina_protocol_widget.c:2146 src/remmina_file_editor.c:473
-#: src/remmina_file_editor.c:1538 src/lremote_window.c:1716
+#: src/remmina_file_editor.c:1538 src/lremote_window.c:1751
 #: data/ui/remmina_main.glade:554
 msgid "Server"
 msgstr "Servidor"
@@ -1556,11 +1305,11 @@ msgstr "Importar"
 msgid "Remmina settings backup"
 msgstr "Backup de configurações do Remmina"
 
-#: src/remmina_main.c:1442 src/lremote_window.c:1076 src/lremote_window.c:1200
+#: src/remmina_main.c:1442 src/lremote_window.c:1082 src/lremote_window.c:1206
 msgid "All files"
 msgstr "Todos os arquivos"
 
-#: src/remmina_main.c:1457 src/lremote_window.c:1224
+#: src/remmina_main.c:1457 src/lremote_window.c:1230
 #, c-format
 msgid ""
 "%d connection profile and the preferences were exported, without passwords."
@@ -1580,22 +1329,22 @@ msgstr ""
 "Não foi possível exportar as configurações:\n"
 "%s"
 
-#: src/remmina_main.c:1480 src/lremote_window.c:1213 src/lremote_window.c:1230
+#: src/remmina_main.c:1480 src/lremote_window.c:1219 src/lremote_window.c:1236
 msgid "Export settings"
 msgstr "Exportar configurações"
 
 #: src/remmina_main.c:1481 src/remmina_main.c:1594
-#: src/remmina_file_editor.c:2153 src/lremote_window.c:1213
-#: src/lremote_window.c:1756
+#: src/remmina_file_editor.c:2153 src/lremote_window.c:1219
+#: src/lremote_window.c:1791
 msgid "_Save"
 msgstr "_Salvar"
 
-#: src/remmina_main.c:1514 src/remmina_main.c:1557 src/lremote_window.c:1247
-#: src/lremote_window.c:1256 src/lremote_window.c:1276
+#: src/remmina_main.c:1514 src/remmina_main.c:1557 src/lremote_window.c:1253
+#: src/lremote_window.c:1262 src/lremote_window.c:1282
 msgid "Import settings"
 msgstr "Importar configurações"
 
-#: src/remmina_main.c:1516 src/lremote_window.c:1258
+#: src/remmina_main.c:1516 src/lremote_window.c:1264
 msgid ""
 "Profiles that already exist can be kept or replaced. Passwords are never "
 "part of a backup, so replaced profiles keep the passwords saved on this "
@@ -1605,11 +1354,11 @@ msgstr ""
 "parte do backup, então os perfis substituídos mantêm as senhas salvas neste "
 "computador."
 
-#: src/remmina_main.c:1518 src/lremote_window.c:1259
+#: src/remmina_main.c:1518 src/lremote_window.c:1265
 msgid "_Keep existing"
 msgstr "_Manter existentes"
 
-#: src/remmina_main.c:1518 src/lremote_window.c:1259
+#: src/remmina_main.c:1518 src/lremote_window.c:1265
 msgid "_Replace"
 msgstr "_Substituir"
 
@@ -1619,7 +1368,7 @@ msgid "%d connection profiles were imported and %d existing ones were kept."
 msgstr ""
 "%d perfis de conexão foram importados e %d já existentes foram mantidos."
 
-#: src/remmina_main.c:1538 src/lremote_window.c:1271
+#: src/remmina_main.c:1538 src/lremote_window.c:1277
 #, c-format
 msgid "%d connection profile was imported."
 msgid_plural "%d connection profiles were imported."
@@ -1635,7 +1384,7 @@ msgstr ""
 "Não foi possível importar as configurações:\n"
 "%s"
 
-#: src/remmina_main.c:1558 src/lremote_window.c:1069 src/lremote_window.c:1247
+#: src/remmina_main.c:1558 src/lremote_window.c:1075 src/lremote_window.c:1253
 msgid "_Open"
 msgstr "_Abrir"
 
@@ -1736,7 +1485,7 @@ msgstr "Resoluções"
 msgid "Configure the available resolutions"
 msgstr "Configure as resoluções disponíveis"
 
-#: src/remmina_file_editor.c:605 src/lremote_window.c:1730
+#: src/remmina_file_editor.c:605 src/lremote_window.c:1765
 msgid "Resolution"
 msgstr "Resolução"
 
@@ -1744,12 +1493,12 @@ msgstr "Resolução"
 msgid "Use initial window size"
 msgstr "Usar o tamanho inicial da janela"
 
-#: src/remmina_file_editor.c:616 src/lremote_window.c:1727
+#: src/remmina_file_editor.c:616 src/lremote_window.c:1762
 msgid "Use client resolution"
 msgstr "Usar a resolução do cliente"
 
 #: src/remmina_file_editor.c:627 src/remmina_file_editor.c:1511
-#: src/lremote_window.c:1728
+#: src/lremote_window.c:1763
 msgid "Custom"
 msgstr "Personalizar"
 
@@ -1900,7 +1649,7 @@ msgstr "Básico"
 msgid "Advanced"
 msgstr "Avançado"
 
-#: src/remmina_file_editor.c:1709 src/lremote_window.c:1748
+#: src/remmina_file_editor.c:1709 src/lremote_window.c:1783
 #: data/ui/remmina_main.glade:568
 msgid "Notes"
 msgstr "Notas"
@@ -2077,6 +1826,18 @@ msgstr ""
 msgid "Encrypt a password"
 msgstr "Criptografa uma senha"
 
+#: src/remmina.c:140
+msgid "Import an mRemoteNG connections file (confCons.xml) and quit"
+msgstr "Importa um arquivo de conexões do mRemoteNG (confCons.xml) e sai"
+
+#: src/remmina.c:142
+msgid "Master password of the mRemoteNG file (default: mR3m)"
+msgstr "Senha mestra do arquivo do mRemoteNG (padrão: mR3m)"
+
+#: src/remmina.c:142
+msgid "PASSWORD"
+msgstr "SENHA"
+
 #: src/remmina.c:143
 msgid "Disable news"
 msgstr "Desativar as notícias"
@@ -2105,23 +1866,11 @@ msgstr ""
 msgid "Disable tray icon"
 msgstr "Desativa o ícone da bandeja"
 
-#: src/remmina.c:421
-msgid ""
-"Remmina does not log all output statements. Turn on more verbose output by "
-"using \"G_MESSAGES_DEBUG=remmina\" as an environment variable.\n"
-"More info available on the Remmina wiki at:\n"
-"https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging"
-msgstr ""
-"Remmina não registra todos os comandos de saída. Ligue uma saída mais "
-"verbosa usando \"G_MESSAGES_DEBUG=remmina\" como uma variável de ambiente.\n"
-"Maiores informações estão disponíveis na wiki do Remmina, em:\n"
-"https://gitlab.com/Remmina/Remmina/-/wikis/Usage/Remmina-debugging"
-
-#: src/remmina.c:475
+#: src/remmina.c:459
 msgid "- or protocol://username:encryptedpassword@host:port"
 msgstr "- ou protocolo://usuario:senhacriptografada@host:porta"
 
-#: src/remmina.c:479
+#: src/remmina.c:463
 #, no-c-format
 msgid ""
 "Examples:\n"
@@ -2402,7 +2151,7 @@ msgstr "Captura todos eventos do teclado"
 msgid "Preferences"
 msgstr "Preferências"
 
-#: src/rcw.c:2664 src/lremote_window.c:1598
+#: src/rcw.c:2664 src/lremote_window.c:1631
 msgid "_Tools"
 msgstr "_Ferramentas"
 
@@ -2516,33 +2265,372 @@ msgstr "Este arquivo não é um backup de configurações do Remmina."
 msgid "The backup was made by a newer Remmina and cannot be read."
 msgstr "O backup foi feito por um Remmina mais novo e não pode ser lido."
 
-#: src/lremote_window.c:1105 data/ui/remmina_unlock.glade:109
+#: src/lremote_crypto.c:71
+msgid "A password is required."
+msgstr "É preciso informar uma senha."
+
+#: src/lremote_crypto.c:78
+msgid "The encrypted value is too short."
+msgstr "O valor cifrado é curto demais."
+
+#: src/lremote_crypto.c:84
+msgid "Key derivation failed."
+msgstr "Falha ao derivar a chave."
+
+#: src/lremote_crypto.c:107 src/lremote_crypto.c:153
+msgid "Wrong password or corrupted data."
+msgstr "Senha incorreta ou dados corrompidos."
+
+#: src/lremote_crypto.c:128
+msgid "The encrypted value is malformed."
+msgstr "O valor cifrado está malformado."
+
+#: src/lremote_mremoteng.c:425
+msgid "Wrong master password."
+msgstr "Senha mestra incorreta."
+
+#: src/lremote_mremoteng.c:442
+msgid "This is not an mRemoteNG connections file."
+msgstr "Este não é um arquivo de conexões do mRemoteNG."
+
+#: src/lremote_mremoteng.c:478
+msgid ""
+"This file is protected with Windows DPAPI and can only be opened on the "
+"Windows account that saved it. In mRemoteNG, set a master password and save "
+"the file again."
+msgstr ""
+"Este arquivo está protegido com o DPAPI do Windows e só abre na conta do "
+"Windows que o salvou. No mRemoteNG, defina uma senha mestra e salve o "
+"arquivo de novo."
+
+#: src/lremote_mremoteng.c:484
+#, c-format
+msgid ""
+"Unsupported encryption %s/%s. In mRemoteNG, choose AES with GCM and save the "
+"file again."
+msgstr ""
+"Criptografia %s/%s não suportada. No mRemoteNG, escolha AES com GCM e salve "
+"o arquivo de novo."
+
+#: src/lremote_mremoteng.c:543
+msgid "Wrong master password, or this is not an mRemoteNG connections file."
+msgstr ""
+"Senha mestra incorreta, ou este não é um arquivo de conexões do mRemoteNG."
+
+#: src/lremote_window.c:501
+#, c-format
+msgid "%d connections in %d folders"
+msgstr "%d conexões em %d pastas"
+
+#: src/lremote_window.c:581
+msgid "(top level)"
+msgstr "(raiz)"
+
+#: src/lremote_window.c:617
+msgid "no server"
+msgstr "sem servidor"
+
+#: src/lremote_window.c:623
+#, c-format
+msgid ""
+"%d connections in %d folders. Double-click a connection to open it in a tab."
+msgstr ""
+"%d conexões em %d pastas. Clique duas vezes numa conexão para abri-la numa "
+"aba."
+
+#: src/lremote_window.c:641 src/lremote_window.c:1745
+msgid "Folder"
+msgstr "Pasta"
+
+#: src/lremote_window.c:641 src/lremote_window.c:651 src/lremote_window.c:1732
+msgid "Config"
+msgstr "Configuração"
+
+#: src/lremote_window.c:663
+msgid "Saved (type to change)"
+msgstr "Salva (digite para trocar)"
+
+#: src/lremote_window.c:663
+msgid "Not saved"
+msgstr "Não salva"
+
+#: src/lremote_window.c:784 src/lremote_window.c:1656
+msgid "New connection"
+msgstr "Nova conexão"
+
+#: src/lremote_window.c:790
+msgid "Could not create the connection."
+msgstr "Não foi possível criar a conexão."
+
+#: src/lremote_window.c:812 src/lremote_window.c:1659
+msgid "New folder"
+msgstr "Nova pasta"
+
+#: src/lremote_window.c:812
+msgid "Folder name"
+msgstr "Nome da pasta"
+
+#: src/lremote_window.c:854
+#, c-format
+msgid "%s (copy)"
+msgstr "%s (cópia)"
+
+#: src/lremote_window.c:875
+#, c-format
+msgid "Delete the connection “%s”?"
+msgstr "Excluir a conexão “%s”?"
+
+#: src/lremote_window.c:890
+#, c-format
+msgid "Delete the folder “%s”?"
+msgstr "Excluir a pasta “%s”?"
+
+#: src/lremote_window.c:891
+msgid "Connections inside it are kept and moved to the parent folder."
+msgstr "As conexões dentro dela são mantidas e vão para a pasta acima."
+
+#: src/lremote_window.c:977
+msgid "Rename folder"
+msgstr "Renomear pasta"
+
+#: src/lremote_window.c:977
+msgid "New name"
+msgstr "Novo nome"
+
+#: src/lremote_window.c:1004
+msgid "Move to folder"
+msgstr "Mover para pasta"
+
+#: src/lremote_window.c:1005
+msgid "_Move"
+msgstr "_Mover"
+
+#: src/lremote_window.c:1009
+msgid "Destination folder"
+msgstr "Pasta de destino"
+
+#: src/lremote_window.c:1074
+msgid "Import from mRemoteNG"
+msgstr "Importar do mRemoteNG"
+
+#: src/lremote_window.c:1077
+msgid "mRemoteNG connections (confCons.xml)"
+msgstr "Conexões do mRemoteNG (confCons.xml)"
+
+#: src/lremote_window.c:1096
+#, c-format
+msgid "%d connections and %d folders were imported."
+msgstr "%d conexões e %d pastas foram importadas."
+
+#: src/lremote_window.c:1099
+#, c-format
+msgid ""
+"%d connections use protocols lRemote does not support yet and were skipped: "
+"%s"
+msgstr ""
+"%d conexões usam protocolos que o lRemote ainda não suporta e foram "
+"ignoradas: %s"
+
+#: src/lremote_window.c:1111 data/ui/remmina_unlock.glade:109
 msgid "Master password"
 msgstr "Senha mestre"
 
-#: src/lremote_window.c:1555 data/ui/remmina_preferences.glade:852
+#: src/lremote_window.c:1113
+msgid ""
+"This file is protected with a master password. Type the password set in "
+"mRemoteNG."
+msgstr ""
+"Este arquivo está protegido com senha mestra. Digite a senha definida no "
+"mRemoteNG."
+
+#: src/lremote_window.c:1114
+msgid "Wrong password. Try again."
+msgstr "Senha incorreta. Tente de novo."
+
+#: src/lremote_window.c:1121
+msgid "Could not import the mRemoteNG file."
+msgstr "Não foi possível importar o arquivo do mRemoteNG."
+
+#: src/lremote_window.c:1191
+#, c-format
+msgid "%d connections were copied from Remmina."
+msgstr "%d conexões foram copiadas do Remmina."
+
+#: src/lremote_window.c:1192
+#, c-format
+msgid "%d already existed in lRemote and were kept."
+msgstr "%d já existiam no lRemote e foram mantidas."
+
+#: src/lremote_window.c:1193
+msgid "No Remmina connections were found."
+msgstr "Nenhuma conexão do Remmina foi encontrada."
+
+#: src/lremote_window.c:1202
+msgid "lRemote settings backup"
+msgstr "Backup de configurações do lRemote"
+
+#: src/lremote_window.c:1309
+msgid ""
+"Remote connections manager for Linux, inspired by mRemoteNG and built on the "
+"Remmina engine."
+msgstr ""
+"Gerenciador de conexões remotas para Linux, inspirado no mRemoteNG e feito "
+"sobre o motor do Remmina."
+
+#: src/lremote_window.c:1313
+msgid "Based on Remmina © Antenore Gatta, Giovanni Panozzo and contributors"
+msgstr "Baseado no Remmina © Antenore Gatta, Giovanni Panozzo e colaboradores"
+
+#: src/lremote_window.c:1428 src/lremote_window.c:1676
+#: src/lremote_window.c:1829
+msgid "_Connect"
+msgstr "_Conectar"
+
+#: src/lremote_window.c:1430
+msgid "_Edit (all settings)…"
+msgstr "_Editar (todas as opções)…"
+
+#: src/lremote_window.c:1431
+msgid "D_uplicate"
+msgstr "D_uplicar"
+
+#: src/lremote_window.c:1432
+msgid "_Move to folder…"
+msgstr "_Mover para pasta…"
+
+#: src/lremote_window.c:1436
+msgid "Connect _all"
+msgstr "Conectar _todas"
+
+#: src/lremote_window.c:1438 src/lremote_window.c:1444
+#: src/lremote_window.c:1591 src/lremote_window.c:1837
+msgid "New _connection"
+msgstr "Nova _conexão"
+
+#: src/lremote_window.c:1439 src/lremote_window.c:1445
+#: src/lremote_window.c:1593
+msgid "New _folder"
+msgstr "Nova _pasta"
+
+#: src/lremote_window.c:1440
+msgid "_Rename…"
+msgstr "_Renomear…"
+
+#: src/lremote_window.c:1584 data/ui/remmina_preferences.glade:852
 msgid "Follow system"
 msgstr "Seguir o sistema"
 
-#: src/lremote_window.c:1555 data/ui/remmina_preferences.glade:853
+#: src/lremote_window.c:1584 data/ui/remmina_preferences.glade:853
 msgid "Light"
 msgstr "Claro"
 
-#: src/lremote_window.c:1555 data/ui/remmina_preferences.glade:854
+#: src/lremote_window.c:1584 data/ui/remmina_preferences.glade:854
 msgid "Dark"
 msgstr "Escuro"
 
-#: src/lremote_window.c:1735 data/ui/remmina_preferences.glade:690
+#: src/lremote_window.c:1588
+msgid "_File"
+msgstr "_Arquivo"
+
+#: src/lremote_window.c:1596 src/lremote_window.c:1840
+msgid "Import from _mRemoteNG…"
+msgstr "Importar do _mRemoteNG…"
+
+#: src/lremote_window.c:1597 src/lremote_window.c:1843
+msgid "Import from _Remmina"
+msgstr "Importar do _Remmina"
+
+#: src/lremote_window.c:1599
+msgid "_Export settings…"
+msgstr "_Exportar configurações…"
+
+#: src/lremote_window.c:1600
+msgid "_Import settings…"
+msgstr "_Importar configurações…"
+
+#: src/lremote_window.c:1607
+msgid "_View"
+msgstr "_Exibir"
+
+#: src/lremote_window.c:1610
+msgid "_Theme"
+msgstr "_Tema"
+
+#: src/lremote_window.c:1626
+msgid "_Expand all"
+msgstr "_Expandir tudo"
+
+#: src/lremote_window.c:1627
+msgid "C_ollapse all"
+msgstr "_Recolher tudo"
+
+#: src/lremote_window.c:1636
+msgid "P_lugins"
+msgstr "P_lugins"
+
+#: src/lremote_window.c:1640
+msgid "_Help"
+msgstr "Aj_uda"
+
+#: src/lremote_window.c:1645
+msgid "_About lRemote"
+msgstr "_Sobre o lRemote"
+
+#: src/lremote_window.c:1665
+msgid "Quick connect"
+msgstr "Conexão rápida"
+
+#: src/lremote_window.c:1672
+msgid "server or user@server"
+msgstr "servidor ou usuário@servidor"
+
+#: src/lremote_window.c:1689
+msgid "Search connections"
+msgstr "Buscar conexões"
+
+#: src/lremote_window.c:1750
+msgid "host or host:port"
+msgstr "host ou host:porta"
+
+#: src/lremote_window.c:1761
+msgid "Fit to window"
+msgstr "Ajustar à janela"
+
+#: src/lremote_window.c:1770 data/ui/remmina_preferences.glade:690
 msgid "Automatic"
 msgstr "Automático"
 
-#: src/lremote_window.c:1738
+#: src/lremote_window.c:1771
+msgid "256 colours (8 bit)"
+msgstr "256 cores (8 bits)"
+
+#: src/lremote_window.c:1772
+msgid "High colour (15 bit)"
+msgstr "High color (15 bits)"
+
+#: src/lremote_window.c:1773
 msgid "High colour (16 bit)"
 msgstr "Alta qualidade (16 bits)"
 
-#: src/lremote_window.c:1739
+#: src/lremote_window.c:1774
 msgid "True colour (24 bit)"
 msgstr "True color (24 bits)"
+
+#: src/lremote_window.c:1775
+msgid "True colour (32 bit)"
+msgstr "True color (32 bits)"
+
+#: src/lremote_window.c:1776
+msgid "Colours"
+msgstr "Cores"
+
+#: src/lremote_window.c:1795
+msgid "_All settings…"
+msgstr "_Todas as opções…"
+
+#: src/lremote_window.c:1796
+msgid "Open every setting of this protocol"
+msgstr "Abre todas as opções deste protocolo"
 
 #: plugins/spice/spice_plugin_usb.c:51 plugins/spice/spice_plugin.c:767
 msgid "Select USB devices for redirection"

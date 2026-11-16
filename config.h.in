@@ -20,6 +20,9 @@
 #define GETTEXT_PACKAGE		"lremote"
 /* Name of the per-user config, data and cache directories */
 #define LREMOTE_DIRNAME		"lremote"
+/* Package release, e.g. "6.fc44"; used by the update check */
+#define LREMOTE_VERSION		"${LREMOTE_VERSION}"
+#define LREMOTE_RELEASE		"${LREMOTE_RELEASE}"
 
 #define REMMINA_RUNTIME_DATADIR			"${REMMINA_RUNTIME_DATADIR}"
 #define REMMINA_RUNTIME_LOCALEDIR		"${REMMINA_RUNTIME_LOCALEDIR}"

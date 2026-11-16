@@ -60,6 +60,8 @@
 
 #include "lremote_window.h"
 #include "lremote_mremoteng.h"
+#include "lremote_update.h"
+#include "remmina_icon.h"
 #include "rcw.h"
 #include "remmina_about.h"
 #include "remmina_backup.h"
@@ -1302,7 +1304,7 @@ static void lw_about(GtkWidget *w, gpointer data)
 	const gchar *authors[] = { "mpjsilva", NULL };
 	gtk_show_about_dialog(lw->window,
 			      "program-name", "lRemote",
-			      "version", VERSION,
+			      "version", LREMOTE_VERSION,
 			      "logo-icon-name", REMMINA_APP_ID,
 			      "comments", _("Remote connections manager for Linux, inspired by mRemoteNG and built on the Remmina engine."),
 			      "website", "https://github.com/mpjsilva/lRemote",
@@ -1511,10 +1513,33 @@ void lremote_window_save_state(void)
 	g_ptr_array_free(exp, TRUE);
 }
 
+static gboolean lw_close_to_tray(void)
+{
+	gchar *v = remmina_pref_get_value("lremote_close_to_tray");
+	gboolean on = v && g_strcmp0(v, "1") == 0;
+	g_free(v);
+	return on;
+}
+
 static gboolean lw_on_delete(GtkWidget *w, GdkEvent *ev, gpointer data)
 {
 	lremote_window_save_state();
+	/* Keep running in the tray; "Restore" in the tray menu brings it back */
+	if (lw_close_to_tray() && remmina_icon_is_available()) {
+		gtk_widget_hide(w);
+		return TRUE;
+	}
 	return FALSE;
+}
+
+static void lw_toggle_close_to_tray(GtkCheckMenuItem *item, gpointer data)
+{
+	remmina_pref_set_value("lremote_close_to_tray", gtk_check_menu_item_get_active(item) ? "1" : "0");
+}
+
+static void lw_check_updates(GtkWidget *w, gpointer data)
+{
+	lremote_update_check(lw->window, FALSE);
 }
 
 static gboolean lw_condexit(gpointer data)
@@ -1593,6 +1618,10 @@ static GtkWidget *lw_build_menubar(GtkAccelGroup *accel)
 		gtk_menu_shell_append(GTK_MENU_SHELL(submenu), item);
 	}
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), sub);
+	item = gtk_check_menu_item_new_with_mnemonic(_("_Minimize to tray on close"));
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), lw_close_to_tray());
+	g_signal_connect(item, "toggled", G_CALLBACK(lw_toggle_close_to_tray), NULL);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	lw_menu_sep(menu);
 	lw_menu_item(menu, _("_Expand all"), G_CALLBACK(lw_expand_all));
 	lw_menu_item(menu, _("C_ollapse all"), G_CALLBACK(lw_collapse_all));
@@ -1611,6 +1640,8 @@ static GtkWidget *lw_build_menubar(GtkAccelGroup *accel)
 	top = gtk_menu_item_new_with_mnemonic(_("_Help"));
 	menu = gtk_menu_new();
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(top), menu);
+	lw_menu_item(menu, _("Check for _updates"), G_CALLBACK(lw_check_updates));
+	lw_menu_sep(menu);
 	lw_menu_item(menu, _("_About lRemote"), G_CALLBACK(lw_about));
 	gtk_menu_shell_append(GTK_MENU_SHELL(bar), top);
 	return bar;

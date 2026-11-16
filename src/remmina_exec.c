@@ -127,7 +127,7 @@ void remmina_exec_exitremmina_one_confirm(void)
 	if (remmina_widget_pool_count() >1 || !remmina_main_get_window()) {
 		GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION,
 								GTK_BUTTONS_YES_NO,
-								_("Are you sure you want to fully quit Remmina?\n This will close any active connections."));
+								_("Quit lRemote?\nOpen connections will be closed."));
 				int response = gtk_dialog_run(GTK_DIALOG(dialog));
 				gtk_widget_destroy(dialog);
 				if (response != GTK_RESPONSE_YES)
@@ -493,7 +493,7 @@ void remmina_exec_command(RemminaCommandType command, const gchar* data)
 		if (mainwindow) {
 			remmina_about_open(NULL);
 		}else  {
-			g_print("%s %s %s (git %s)\n", g_get_application_name(), ISSNAP, VERSION, REMMINA_GIT_REVISION);
+			g_print("lRemote %s-%s (Remmina %s)\n", LREMOTE_VERSION, LREMOTE_RELEASE, VERSION);
 			/* As we do not use the "handle-local-options" signal, we have to exit Remmina */
 			remmina_exec_command(REMMINA_COMMAND_EXIT, NULL);
 		}
@@ -506,7 +506,7 @@ void remmina_exec_command(RemminaCommandType command, const gchar* data)
 			/* Show th widget with the list of plugins and versions */
 			remmina_plugin_manager_show(mainwindow);
 		}else  {
-			g_print("\n%s %s %s (git %s)\n\n", g_get_application_name(), ISSNAP, VERSION, REMMINA_GIT_REVISION);
+			g_print("\nlRemote %s-%s (Remmina %s)\n\n", LREMOTE_VERSION, LREMOTE_RELEASE, VERSION);
 
 			remmina_plugin_manager_show_stdout();
 			g_print("\n%s\n", remmina_exec_get_build_config());

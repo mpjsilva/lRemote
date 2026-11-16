@@ -39,6 +39,8 @@
 #include <glib/gi18n.h>
 
 #include "remmina_icon.h"
+#include "lremote_update.h"
+#include "lremote_window.h"
 
 #ifdef HAVE_LIBAPPINDICATOR
 #  ifdef HAVE_AYATANA_LIBAPPINDICATOR
@@ -95,6 +97,11 @@ static void remmina_icon_main(void)
 {
 	TRACE_CALL(__func__);
 	remmina_exec_command(REMMINA_COMMAND_MAIN, NULL);
+}
+
+static void remmina_icon_update(void)
+{
+	lremote_update_check(lremote_window_get(), FALSE);
 }
 
 static void remmina_icon_preferences(void)
@@ -169,7 +176,12 @@ static void remmina_icon_populate_additional_menu_item(GtkWidget *menu)
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
 	g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(remmina_icon_preferences), NULL);
 
-	menuitem = gtk_menu_item_new_with_label(_("Open Main Window"));
+	menuitem = gtk_menu_item_new_with_mnemonic(_("Check for _updates"));
+	gtk_widget_show(menuitem);
+	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+	g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(remmina_icon_update), NULL);
+
+	menuitem = gtk_menu_item_new_with_mnemonic(_("_Restore"));
 	gtk_widget_show(menuitem);
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
 	g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(remmina_icon_main), NULL);
@@ -319,7 +331,7 @@ static void remmina_icon_create_autostart_file(void)
 	gkeyfile = g_key_file_new();
 	g_key_file_set_string(gkeyfile, "Desktop Entry", "Version", "1.0");
 	// TRANSLATORS: Applet name as per the Freedesktop Desktop entry specification https://specifications.freedesktop.org/desktop-entry-spec/latest/
-	g_key_file_set_string(gkeyfile, "Desktop Entry", "Name", _("Remmina Applet"));
+	g_key_file_set_string(gkeyfile, "Desktop Entry", "Name", "lRemote");
 	// TRANSLATORS: Applet comment/description as per the Freedesktop Desktop entry specification https://specifications.freedesktop.org/desktop-entry-spec/latest/
 	g_key_file_set_string(gkeyfile, "Desktop Entry", "Comment", _("Connect to remote desktops through the applet menu"));
 	g_key_file_set_string(gkeyfile, "Desktop Entry", "Icon", REMMINA_APP_ID);
@@ -327,7 +339,7 @@ static void remmina_icon_create_autostart_file(void)
 		g_key_file_set_string(gkeyfile, "Desktop Entry", "Exec", "flatpak run org.remmina.Remmina -i");
 	}
 	else{
-		g_key_file_set_string(gkeyfile, "Desktop Entry", "Exec", "remmina -i");
+		g_key_file_set_string(gkeyfile, "Desktop Entry", "Exec", "lremote -i");
 	}
 	g_key_file_set_boolean(gkeyfile, "Desktop Entry", "Terminal", FALSE);
 	g_key_file_set_string(gkeyfile, "Desktop Entry", "Type", "Application");
@@ -383,7 +395,7 @@ void remmina_icon_init(void)
 	gchar remmina_panel[29];
 	gboolean sni_supported;
 
-	g_stpcpy(remmina_panel, "org.remmina.Remmina-status");
+	g_stpcpy(remmina_panel, REMMINA_APP_ID);
 
 	/* Print on stdout the availability of appindicators on DBUS */
 	sni_supported = remmina_sysinfo_is_appindicator_available();
@@ -420,9 +432,9 @@ void remmina_icon_init(void)
 		REMMINA_INFO(_("%s You may need to install, and use Gnome Shell Extension Appindicator"), msg);
 
 	if (!remmina_icon.icon && !remmina_pref.disable_tray_icon) {
-		remmina_icon.icon = app_indicator_new("remmina-icon", remmina_panel, APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+		remmina_icon.icon = app_indicator_new("lremote-icon", remmina_panel, APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 		app_indicator_set_status(remmina_icon.icon, APP_INDICATOR_STATUS_ACTIVE);
-		app_indicator_set_title(remmina_icon.icon, "Remmina");
+		app_indicator_set_title(remmina_icon.icon, "lRemote");
 		remmina_icon_populate_menu();
 	} else if (remmina_icon.icon) {
 		app_indicator_set_status(remmina_icon.icon, remmina_pref.disable_tray_icon ?
@@ -444,7 +456,7 @@ void remmina_icon_init(void)
 	}
 #endif
 	if (!remmina_icon.autostart_file && !remmina_pref.disable_tray_icon) {
-		remmina_icon.autostart_file = g_strdup_printf("%s/.config/autostart/remmina-applet.desktop", g_get_home_dir());
+		remmina_icon.autostart_file = g_strdup_printf("%s/.config/autostart/lremote-applet.desktop", g_get_home_dir());
 		remmina_icon_create_autostart_file();
 	}
 	// "connected" property means a visible indicator, otherwise could be hidden. or fall back to GtkStatusIcon
@@ -486,7 +498,7 @@ void remmina_icon_set_autostart(gboolean autostart)
 			g_key_file_set_boolean(gkeyfile, "Desktop Entry", "Hidden", !autostart);
 			/* Refresh it in case translation is updated */
 			// TRANSLATORS: Applet Name as per the Freedesktop Desktop entry specification https://specifications.freedesktop.org/desktop-entry-spec/latest/
-			g_key_file_set_string(gkeyfile, "Desktop Entry", "Name", _("Remmina Applet"));
+			g_key_file_set_string(gkeyfile, "Desktop Entry", "Name", "lRemote");
 			// TRANSLATORS: Applet comment/description as per the Freedesktop Desktop entry specification https://specifications.freedesktop.org/desktop-entry-spec/latest/
 			g_key_file_set_string(gkeyfile, "Desktop Entry", "Comment", _("Connect to remote desktops through the applet menu"));
 			remmina_icon_save_autostart_file(gkeyfile);

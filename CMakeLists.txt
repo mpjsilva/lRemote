@@ -314,6 +314,10 @@ message(STATUS "Git Revision: ${REMMINA_GIT_REVISION}")
 
 # REMMINA_APP_ID should follow Gnome Application ID rules
 set(REMMINA_APP_ID "io.github.mpjsilva.lRemote")
+set(LREMOTE_VERSION "0.1.0")
+if(NOT LREMOTE_RELEASE)
+  set(LREMOTE_RELEASE "0")
+endif()
 
 if(NOT REMMINA_DATADIR)
   set(REMMINA_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}")

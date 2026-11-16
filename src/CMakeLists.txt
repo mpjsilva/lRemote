@@ -89,6 +89,8 @@ list(
   "lremote_crypto.h"
   "lremote_mremoteng.c"
   "lremote_mremoteng.h"
+  "lremote_update.c"
+  "lremote_update.h"
   "lremote_window.c"
   "lremote_window.h"
   "remmina_backup.c"

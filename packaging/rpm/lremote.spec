@@ -1,6 +1,6 @@
 Name:           lremote
 Version:        0.1.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        mRemoteNG-style remote connections manager built on the Remmina engine
 License:        GPL-2.0-or-later
 URL:            https://github.com/mpjsilva/lRemote
@@ -32,7 +32,8 @@ engine. It imports mRemoteNG confCons.xml files and Remmina profiles.
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=Release -DWITH_X2GO=OFF -DWITH_PYTHONLIBS=OFF \
-  -DWITH_KF5WALLET=OFF -DWITH_GVNC=OFF -DWITH_WWW=ON -DWITH_FREERDP3=ON
+  -DWITH_KF5WALLET=OFF -DWITH_GVNC=OFF -DWITH_WWW=ON -DWITH_FREERDP3=ON \
+  -DLREMOTE_RELEASE=%{release}
 %cmake_build
 
 %install
@@ -59,6 +60,11 @@ chmod 755 %{buildroot}%{_bindir}/lremote
 %{_mandir}/man1/*
 
 %changelog
+* Mon Nov 16 2026 mpjsilva - 0.1.0-7
+- Minimize to tray on close; tray menu with Restore, Check for updates, Quit.
+- Update check against GitHub releases, installs with pkexec dnf.
+- lRemote version in About and --version; own tray icon and autostart entry.
+
 * Mon Nov 16 2026 mpjsilva - 0.1.0-6
 - Use the system fontconfig; fix web and VNC plugin symbols; quieter start.
 
