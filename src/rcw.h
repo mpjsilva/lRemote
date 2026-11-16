@@ -73,6 +73,8 @@ G_GNUC_CONST;
 
 /* Open a new connection window for a .remmina file */
 gboolean rcw_open_from_filename(const gchar *filename);
+/* lRemote: always open in a separate window, even in tabbed mode */
+gboolean rcw_open_from_filename_in_window(const gchar *filename);
 /* Open a new connection window for a given RemminaFile struct. The struct will be freed after the call */
 void rcw_open_from_file(RemminaFile *remminafile);
 gboolean rcw_delete(RemminaConnectionWindow *cnnwin);

@@ -1,6 +1,6 @@
 Name:           lremote
 Version:        0.1.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        mRemoteNG-style remote connections manager built on the Remmina engine
 License:        GPL-2.0-or-later
 URL:            https://github.com/mpjsilva/lRemote
@@ -60,6 +60,10 @@ chmod 755 %{buildroot}%{_bindir}/lremote
 %{_mandir}/man1/*
 
 %changelog
+* Mon Nov 16 2026 mpjsilva - 0.1.0-8
+- Connections open as tabs inside the main window (View > Open connections in tabs); "Connect in a new window" in the context menu.
+- Fix scrolling of the tree and config panels.
+
 * Mon Nov 16 2026 mpjsilva - 0.1.0-7
 - Minimize to tray on close; tray menu with Restore, Check for updates, Quit.
 - Update check against GitHub releases, installs with pkexec dnf.

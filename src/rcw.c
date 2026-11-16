@@ -50,6 +50,7 @@
 #include "remmina.h"
 #include "remmina_main.h"
 #include "rcw.h"
+#include "lremote_window.h"
 #include "remmina_applet_menu_item.h"
 #include "remmina_applet_menu.h"
 #include "remmina_file.h"
@@ -192,6 +193,23 @@ static guint rcw_signals[LAST_SIGNAL] =
 { 0 };
 
 static RemminaConnectionWindow *rcw_create_scrolled(gint width, gint height, gboolean maximize);
+/* lRemote: the connection window whose tabs live inside the main window */
+static RemminaConnectionWindow *rcw_embedded = NULL;
+static GtkWidget *rcw_embedded_grid = NULL;
+static gboolean rcw_force_window = FALSE;
+static gboolean rcw_is_active(RemminaConnectionWindow *cnnwin)
+{
+	if (cnnwin == rcw_embedded)
+		return FALSE;   /* no keyboard grabs on the hidden host window */
+	return gtk_window_is_active(GTK_WINDOW(cnnwin));
+}
+static void rcw_present(RemminaConnectionWindow *cnnwin)
+{
+	if (cnnwin == rcw_embedded)
+		lremote_window_embed_present(rcw_embedded_grid);
+	else
+		gtk_window_present_with_time(GTK_WINDOW(cnnwin), (guint32)(g_get_monotonic_time() / 1000));
+}
 static RemminaConnectionWindow *rcw_create_fullscreen(GtkWindow *old, gint view_mode, gboolean multi_mon);
 static gboolean rcw_hostkey_func(RemminaProtocolWidget *gp, guint keyval, gboolean release);
 static GtkWidget *rco_create_tab_page(RemminaConnectionObject *cnnobj);
@@ -731,6 +749,13 @@ static void rcw_destroy(GtkWidget *widget, gpointer data)
 
 	cnnwin = (RemminaConnectionWindow *)widget;
 	priv = cnnwin->priv;
+
+	if (cnnwin == rcw_embedded) {
+		GtkWidget *grid = rcw_embedded_grid;
+		rcw_embedded = NULL;
+		rcw_embedded_grid = NULL;
+		lremote_window_embed_detach(grid);
+	}
 
 	if (priv->kbcaptured)
 		rcw_kp_ungrab(cnnwin);
@@ -2330,7 +2355,10 @@ static void rcw_toolbar_minimize(GtkToolItem *toggle, RemminaConnectionWindow *c
 		return;
 
 	rcw_floating_toolbar_show(cnnwin, FALSE);
-	gtk_window_iconify(GTK_WINDOW(cnnwin));
+	if (cnnwin == rcw_embedded && lremote_window_get())
+		gtk_window_iconify(lremote_window_get());
+	else
+		gtk_window_iconify(GTK_WINDOW(cnnwin));
 }
 
 static void rcw_toolbar_disconnect(GtkToolItem *toggle, RemminaConnectionWindow *cnnwin)
@@ -3046,7 +3074,7 @@ static gboolean rco_enter_protocol_widget(GtkWidget *widget, GdkEventCrossing *e
 	}
 
 	/* Check if we need grabbing */
-	active = gtk_window_is_active(GTK_WINDOW(cnnobj->cnnwin));
+	active = rcw_is_active(cnnobj->cnnwin);
 	if (remmina_file_get_int(cnnobj->remmina_file, "keyboard_grab", FALSE) && active) {
 		rcw_keyboard_grab(cnnobj->cnnwin);
 		rcw_pointer_grab(cnnobj->cnnwin);
@@ -3831,7 +3859,7 @@ rcw_on_notebook_create_window(GtkNotebook *notebook, GtkWidget *page, gint x, gi
 #endif
 
 	window = gdk_device_get_window_at_position(device, &x, &y);
-	srccnnwin = RCW(gtk_widget_get_toplevel(GTK_WIDGET(notebook)));
+	srccnnwin = RCW(data);
 	dstcnnwin = RCW(remmina_widget_pool_find_by_window(REMMINA_TYPE_CONNECTION_WINDOW, window));
 
 	if (srccnnwin == dstcnnwin)
@@ -3848,7 +3876,9 @@ rcw_on_notebook_create_window(GtkNotebook *notebook, GtkWidget *page, gint x, gi
 		 * height of the new window are cloned from the current window */
 		srctag = (gchar *)g_object_get_data(G_OBJECT(srccnnwin), "tag");
 		gtk_window_get_size(GTK_WINDOW(srccnnwin), &width, &height);
+		rcw_force_window = TRUE;
 		dstcnnwin = rcw_create_scrolled(width, height, FALSE);  // New dropped window is never maximized
+		rcw_force_window = FALSE;
 		g_object_set_data_full(G_OBJECT(dstcnnwin), "tag", g_strdup(srctag), (GDestroyNotify)g_free);
 		/* when returning, GTK will move the whole tab to the new notebook.
 		 * Prepare cnnobj to be hosted in the new cnnwin */
@@ -3874,7 +3904,7 @@ rcw_create_notebook(RemminaConnectionWindow *cnnwin)
 	gtk_notebook_set_scrollable(GTK_NOTEBOOK(notebook), TRUE);
 	gtk_widget_show(GTK_WIDGET(notebook));
 
-	g_signal_connect(G_OBJECT(notebook), "create-window", G_CALLBACK(rcw_on_notebook_create_window), NULL);
+	g_signal_connect(G_OBJECT(notebook), "create-window", G_CALLBACK(rcw_on_notebook_create_window), cnnwin);
 	g_signal_connect(G_OBJECT(notebook), "switch-page", G_CALLBACK(rcw_on_switch_page), cnnwin);
 	g_signal_connect(G_OBJECT(notebook), "page-added", G_CALLBACK(rcw_on_page_added), cnnwin);
 	g_signal_connect(G_OBJECT(notebook), "page-removed", G_CALLBACK(rcw_on_page_removed), cnnwin);
@@ -3941,6 +3971,18 @@ static RemminaConnectionWindow *rcw_create_scrolled(gint width, gint height, gbo
 	/* The notebook and all its child must be realized now, or a reparent will
 	 * call unrealize() and will destroy a GtkSocket */
 	gtk_widget_show(grid);
+	if (!rcw_embedded && !rcw_force_window && lremote_window_embed_wanted()) {
+		/* lRemote: move toolbar+notebook into the main window; the
+		 * connection window itself stays hidden as a logic holder */
+		rcw_embedded = cnnwin;
+		rcw_embedded_grid = grid;
+		g_object_ref(grid);
+		gtk_container_remove(GTK_CONTAINER(cnnwin), grid);
+		lremote_window_embed_attach(grid);
+		g_object_unref(grid);
+		rcw_set_toolbar_visibility(cnnwin);
+		return cnnwin;
+	}
 	gtk_widget_show(GTK_WIDGET(cnnwin));
 	GtkWindowGroup *wingrp = gtk_window_group_new();
 
@@ -4491,6 +4533,11 @@ static RemminaConnectionWindow *rcw_find(RemminaFile *remminafile)
 	TRACE_CALL(__func__);
 	const gchar *tag;
 
+	if (rcw_force_window)
+		return NULL;
+	if (lremote_window_embed_wanted())
+		return rcw_embedded;
+
 	switch (remmina_pref.tab_mode) {
 	case REMMINA_TAB_BY_GROUP:
 		tag = remmina_file_get_string(remminafile, "group");
@@ -4513,7 +4560,7 @@ static gboolean rcw_delayed_window_present(gpointer user_data)
 	RemminaConnectionWindow *cnnwin = (RemminaConnectionWindow *)user_data;
 
 	if (cnnwin) {
-		gtk_window_present_with_time(GTK_WINDOW(cnnwin), (guint32)(g_get_monotonic_time() / 1000));
+		rcw_present(cnnwin);
 		rcw_grab_focus(cnnwin);
 	}
 	cnnwin->priv->dwp_eventsourceid = 0;
@@ -4554,7 +4601,7 @@ static void rco_on_connect(RemminaProtocolWidget *gp, RemminaConnectionObject *c
 
 	if (cnnobj->cnnwin->priv->pointer_entered) {
 		/* Check if we need grabbing */
-		gboolean active = gtk_window_is_active(GTK_WINDOW(cnnobj->cnnwin));
+		gboolean active = rcw_is_active(cnnobj->cnnwin);
 		if (remmina_file_get_int(cnnobj->remmina_file, "keyboard_grab", FALSE) && active) {
 			rcw_keyboard_grab(cnnobj->cnnwin);
 			rcw_pointer_grab(cnnobj->cnnwin);
@@ -4657,6 +4704,16 @@ static void rco_on_unlock_dynres(RemminaProtocolWidget *gp, gpointer data)
 
 	cnnobj->dynres_unlocked = TRUE;
 	rco_update_toolbar(cnnobj);
+}
+
+gboolean rcw_open_from_filename_in_window(const gchar *filename)
+{
+	gboolean ret;
+
+	rcw_force_window = TRUE;
+	ret = rcw_open_from_filename(filename);
+	rcw_force_window = FALSE;
+	return ret;
 }
 
 gboolean rcw_open_from_filename(const gchar *filename)
@@ -4870,7 +4927,7 @@ GtkWidget *rcw_open_from_file_full(RemminaFile *remminafile, GCallback disconnec
 		rcw_append_new_page(cnnobj->cnnwin, cnnobj);
 	} else {
 		newpage = rcw_append_new_page(cnnobj->cnnwin, cnnobj);
-		gtk_window_present(GTK_WINDOW(cnnobj->cnnwin));
+		rcw_present(cnnobj->cnnwin);
 		nb_set_current_page(cnnobj->cnnwin->priv->notebook, newpage);
 	}
 

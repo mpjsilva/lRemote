@@ -5873,3 +5873,18 @@ msgstr "Domínio do gateway\\Nome de usuário"
 #: data/ui/remmina_mpc.glade:588
 msgid "<span weight='bold' size='larger'>Multi Password Changer</span>"
 msgstr "<span weight='bold' size='larger'>Alterador de várias senhas</span>"
+
+msgid "Open connections in _tabs"
+msgstr "Abrir conexões em _abas"
+
+msgid "On: inside this window, like mRemoteNG. Off: each in its own window, like Remmina."
+msgstr "Ligado: dentro desta janela, como no mRemoteNG. Desligado: cada uma em sua janela, como no Remmina."
+
+msgid "Connect in a new _window"
+msgstr "Conectar em nova _janela"
+
+msgid "Close lRemote?"
+msgstr "Fechar o lRemote?"
+
+msgid "Open connections will be closed."
+msgstr "As conexões abertas serão fechadas."

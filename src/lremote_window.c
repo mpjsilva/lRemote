@@ -130,6 +130,10 @@ typedef struct {
 	GtkLabel *	start_detail;
 	GtkWidget *	start_connect;
 
+	/* right side: start page or the embedded session tabs */
+	GtkStack *	right;
+	GtkWidget *	sessions;
+
 	gchar *		selected_file;
 	gchar *		selected_folder;
 	gint		n_connections;
@@ -141,6 +145,7 @@ typedef struct {
 static LremoteWindow *lw = NULL;
 
 static void lw_update_start_page(RemminaFile *f);
+static void lw_connect_selected_window(GtkWidget *w, gpointer data);
 
 static const gint colordepths[] = { 0, 8, 15, 16, 24, 32 };
 
@@ -1426,6 +1431,7 @@ static gboolean lw_on_tree_button(GtkWidget *w, GdkEventButton *ev, gpointer dat
 	menu = gtk_menu_new();
 	if (lw->selected_file) {
 		lw_menu_item(menu, _("_Connect"), G_CALLBACK(lw_connect_selected));
+		lw_menu_item(menu, _("Connect in a new _window"), G_CALLBACK(lw_connect_selected_window));
 		lw_menu_sep(menu);
 		lw_menu_item(menu, _("_Edit (all settings)…"), G_CALLBACK(lw_edit_advanced));
 		lw_menu_item(menu, _("D_uplicate"), G_CALLBACK(lw_duplicate));
@@ -1503,7 +1509,6 @@ void lremote_window_save_state(void)
 	lw_pref_set_int("lremote_width", wd);
 	lw_pref_set_int("lremote_height", ht);
 	lw_pref_set_int("lremote_hpaned", gtk_paned_get_position(lw->hpaned));
-	lw_pref_set_int("lremote_vpaned", gtk_paned_get_position(lw->vpaned));
 	exp = g_ptr_array_new_with_free_func(g_free);
 	gtk_tree_view_map_expanded_rows(lw->tree, lw_collect_expanded, exp);
 	g_ptr_array_add(exp, NULL);
@@ -1511,6 +1516,79 @@ void lremote_window_save_state(void)
 	remmina_pref_set_value("lremote_expanded", v);
 	g_free(v);
 	g_ptr_array_free(exp, TRUE);
+}
+
+static gboolean lw_pref_bool(const gchar *key, gboolean def)
+{
+	gchar *v = remmina_pref_get_value(key);
+	gboolean on = (v && *v) ? g_strcmp0(v, "1") == 0 : def;
+	g_free(v);
+	return on;
+}
+
+/* Sessions open as tabs inside the main window (mRemoteNG style) */
+gboolean lremote_window_embed_wanted(void)
+{
+	return lw != NULL && lw_pref_bool("lremote_session_tabs", TRUE);
+}
+
+void lremote_window_embed_attach(GtkWidget *grid)
+{
+	if (!lw)
+		return;
+	gtk_box_pack_start(GTK_BOX(lw->sessions), grid, TRUE, TRUE, 0);
+	gtk_widget_show(grid);
+	gtk_stack_set_visible_child_name(lw->right, "sessions");
+}
+
+void lremote_window_embed_detach(GtkWidget *grid)
+{
+	if (!lw || !grid)
+		return;
+	if (gtk_widget_get_parent(grid) == lw->sessions)
+		gtk_widget_destroy(grid);
+	gtk_stack_set_visible_child_name(lw->right, "start");
+}
+
+void lremote_window_embed_present(GtkWidget *grid)
+{
+	if (!lw)
+		return;
+	gtk_stack_set_visible_child_name(lw->right, "sessions");
+	gtk_widget_show(GTK_WIDGET(lw->window));
+	gtk_window_present_with_time(lw->window, (guint32)(g_get_monotonic_time() / 1000));
+}
+
+static gboolean lw_has_sessions(void)
+{
+	GList *l = gtk_container_get_children(GTK_CONTAINER(lw->sessions));
+	gboolean any = l != NULL;
+	g_list_free(l);
+	return any;
+}
+
+/* While a session has focus, keys go to it first: menu accelerators and
+ * mnemonics of the main window must not steal Ctrl+N, Alt+F and so on */
+static gboolean lw_on_key(GtkWidget *w, GdkEventKey *ev, gpointer data)
+{
+	GtkWidget *focus = gtk_window_get_focus(lw->window);
+
+	if (focus && gtk_widget_is_ancestor(focus, lw->sessions)) {
+		gtk_window_propagate_key_event(lw->window, ev);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static void lw_toggle_session_tabs(GtkCheckMenuItem *item, gpointer data)
+{
+	remmina_pref_set_value("lremote_session_tabs", gtk_check_menu_item_get_active(item) ? "1" : "0");
+}
+
+static void lw_connect_selected_window(GtkWidget *w, gpointer data)
+{
+	if (lw->selected_file)
+		rcw_open_from_filename_in_window(lw->selected_file);
 }
 
 static gboolean lw_close_to_tray(void)
@@ -1529,6 +1607,8 @@ static gboolean lw_on_delete(GtkWidget *w, GdkEvent *ev, gpointer data)
 		gtk_widget_hide(w);
 		return TRUE;
 	}
+	if (lw_has_sessions() && !lw_confirm(_("Close lRemote?"), _("Open connections will be closed."), _("_Close")))
+		return TRUE;
 	return FALSE;
 }
 
@@ -1621,6 +1701,11 @@ static GtkWidget *lw_build_menubar(GtkAccelGroup *accel)
 	item = gtk_check_menu_item_new_with_mnemonic(_("_Minimize to tray on close"));
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), lw_close_to_tray());
 	g_signal_connect(item, "toggled", G_CALLBACK(lw_toggle_close_to_tray), NULL);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	item = gtk_check_menu_item_new_with_mnemonic(_("Open connections in _tabs"));
+	gtk_widget_set_tooltip_text(item, _("On: inside this window, like mRemoteNG. Off: each in its own window, like Remmina."));
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), lw_pref_bool("lremote_session_tabs", TRUE));
+	g_signal_connect(item, "toggled", G_CALLBACK(lw_toggle_session_tabs), NULL);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	lw_menu_sep(menu);
 	lw_menu_item(menu, _("_Expand all"), G_CALLBACK(lw_expand_all));
@@ -1784,6 +1869,7 @@ static GtkWidget *lw_build_props(void)
 
 	sw = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(sw), TRUE);
 	gtk_container_add(GTK_CONTAINER(sw), grid);
 	gtk_box_pack_start(GTK_BOX(box), sw, TRUE, TRUE, 0);
 
@@ -1847,6 +1933,18 @@ static GtkWidget *lw_build_start_page(void)
 	return box;
 }
 
+/* Give the config panel the height of its fields and the tree the rest,
+ * so neither scrolls while there is room (once, at the first layout) */
+static void lw_fit_props(GtkWidget *paned, GdkRectangle *a, gpointer frame)
+{
+	gint min, nat, pos;
+
+	g_signal_handlers_disconnect_by_func(paned, lw_fit_props, frame);
+	gtk_widget_get_preferred_height(GTK_WIDGET(frame), &min, &nat);
+	pos = a->height - nat - 6;
+	gtk_paned_set_position(GTK_PANED(paned), MAX(pos, a->height / 2));
+}
+
 GtkWindow *lremote_window_get(void)
 {
 	return lw ? lw->window : NULL;
@@ -1872,6 +1970,7 @@ GtkWidget *lremote_window_present(void)
 	accel = gtk_accel_group_new();
 	gtk_window_add_accel_group(lw->window, accel);
 	g_signal_connect(win, "delete-event", G_CALLBACK(lw_on_delete), NULL);
+	g_signal_connect(win, "key-press-event", G_CALLBACK(lw_on_key), NULL);
 	g_signal_connect(win, "destroy", G_CALLBACK(lw_on_destroy), NULL);
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -1891,9 +1990,13 @@ GtkWidget *lremote_window_present(void)
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 6);
 	gtk_paned_pack2(lw->vpaned, frame, FALSE, FALSE);
 	gtk_paned_pack1(lw->hpaned, GTK_WIDGET(lw->vpaned), FALSE, FALSE);
-	gtk_paned_pack2(lw->hpaned, lw_build_start_page(), TRUE, FALSE);
+	lw->right = GTK_STACK(gtk_stack_new());
+	gtk_stack_add_named(lw->right, lw_build_start_page(), "start");
+	lw->sessions = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_stack_add_named(lw->right, lw->sessions, "sessions");
+	gtk_paned_pack2(lw->hpaned, GTK_WIDGET(lw->right), TRUE, FALSE);
 	gtk_paned_set_position(lw->hpaned, lw_pref_int("lremote_hpaned", 340));
-	gtk_paned_set_position(lw->vpaned, lw_pref_int("lremote_vpaned", 320));
+	g_signal_connect(lw->vpaned, "size-allocate", G_CALLBACK(lw_fit_props), frame);
 
 	lw->status = GTK_LABEL(gtk_label_new(""));
 	gtk_label_set_xalign(lw->status, 0);

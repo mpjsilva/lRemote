@@ -47,4 +47,10 @@ void lremote_window_refresh(void);
 /* Persists window size and pane positions; safe to call when closed */
 void lremote_window_save_state(void);
 
+/* Embedded session tabs, used by rcw.c */
+gboolean lremote_window_embed_wanted(void);
+void lremote_window_embed_attach(GtkWidget *grid);
+void lremote_window_embed_detach(GtkWidget *grid);
+void lremote_window_embed_present(GtkWidget *grid);
+
 G_END_DECLS
