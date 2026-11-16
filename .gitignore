@@ -23,3 +23,5 @@ generated
 CMakeSettings.json
 .vs
 .vscode
+build/
+dist/

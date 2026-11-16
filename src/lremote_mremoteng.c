@@ -479,7 +479,7 @@ gboolean lremote_mremoteng_import(const gchar *path, const gchar *password, Lrem
 	lremote_mremoteng_stats_clear(stats);
 	{
 		/* Make sure profiles land in the user's data dir, not a system one */
-		gchar *userdir = g_build_filename(g_get_user_data_dir(), "remmina", NULL);
+		gchar *userdir = g_build_filename(g_get_user_data_dir(), LREMOTE_DIRNAME, NULL);
 		g_mkdir_with_parents(userdir, 0700);
 		g_free(userdir);
 	}

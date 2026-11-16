@@ -62,5 +62,5 @@ install(FILES
     DESTINATION ${APPICONSCALE_EMBLEMS_DIR})
 
 if(WITH_ICON_CACHE)
-    gtk_update_icon_cache("${REMMINA_DATADIR}/icons/hicolor")
+    # icons live in lremote/icons, no cache needed
 endif()

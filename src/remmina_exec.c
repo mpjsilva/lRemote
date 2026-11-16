@@ -52,6 +52,7 @@
 #include "remmina_about.h"
 #include "remmina_plugin_manager.h"
 #include "remmina_exec.h"
+#include "lremote_window.h"
 #include "remmina/remmina_trace_calls.h"
 #include "remmina_file_manager.h"
 #include "remmina_crypt.h"
@@ -423,13 +424,8 @@ void remmina_exec_command(RemminaCommandType command, const gchar* data)
 		break;
 
 	case REMMINA_COMMAND_MAIN:
-		if (mainwindow) {
-			gtk_window_present(mainwindow);
-			gtk_window_deiconify(GTK_WINDOW(mainwindow));
-		}else  {
-			widget = remmina_main_new();
-			gtk_widget_show(widget);
-		}
+		/* lRemote: the mRemoteNG-style window replaces Remmina's main window */
+		lremote_window_present();
 		break;
 
 	case REMMINA_COMMAND_PREF:

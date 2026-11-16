@@ -196,7 +196,7 @@ void remmina_file_set_statefile(RemminaFile *remminafile)
 		g_free(remminafile->statefile);
 
 	gchar *basename = g_path_get_basename(remminafile->filename);
-	gchar *cachedir = g_build_path("/", g_get_user_cache_dir(), "remmina", NULL);
+	gchar *cachedir = g_build_path("/", g_get_user_cache_dir(), LREMOTE_DIRNAME, NULL);
 	GString *fname = g_string_new(basename);
 
 	remminafile->statefile = g_strdup_printf("%s/%s.state", cachedir, fname->str);

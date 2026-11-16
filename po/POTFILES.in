@@ -99,6 +99,7 @@ src/remmina_theme.c
 src/remmina_backup.c
 src/lremote_crypto.c
 src/lremote_mremoteng.c
+src/lremote_window.c
 src/remmina_sysinfo.h
 plugins/spice/spice_plugin_usb.c
 plugins/spice/spice_file.c

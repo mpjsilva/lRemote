@@ -68,6 +68,7 @@
 #include "remmina_unlock.h"
 #include "remmina_theme.h"
 #include "remmina_backup.h"
+#include "lremote_window.h"
 #include "remmina/remmina_trace_calls.h"
 
 static RemminaMain *remminamain;
@@ -189,6 +190,7 @@ static void remmina_main_save_expanded_group(void)
 void remmina_main_save_before_destroy(void)
 {
 	TRACE_CALL(__func__);
+	lremote_window_save_state();
 	if (!remminamain || !remminamain->window)
 		return;
 
@@ -202,6 +204,8 @@ void remmina_main_save_before_destroy(void)
 void remmina_main_destroy(void)
 {
 	TRACE_CALL(__func__);
+	if (lremote_window_get())
+		gtk_widget_destroy(GTK_WIDGET(lremote_window_get()));
 
 	if (remminamain) {
 		if (remminamain->window)
@@ -2083,6 +2087,8 @@ GtkWidget *remmina_main_new(void)
 
 GtkWindow *remmina_main_get_window(void)
 {
+	if (lremote_window_get())
+		return lremote_window_get();
 	if (!remminamain)
 		return NULL;
 	if (!remminamain->priv)
@@ -2095,6 +2101,7 @@ GtkWindow *remmina_main_get_window(void)
 
 void remmina_main_update_file_datetime(RemminaFile *file)
 {
+	lremote_window_refresh();
 	if (!remminamain)
 		return;
 	remmina_main_load_files();

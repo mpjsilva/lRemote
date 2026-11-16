@@ -235,10 +235,10 @@ void remmina_pref_init(void)
 	const gchar *colors_filename = "remmina.colors";
 	g_autofree gchar *remmina_colors_file = NULL;
 	GDir *dir;
-	const gchar *legacy = ".remmina";
+	const gchar *legacy = ".lremote";
 	int i;
 
-	remmina_dir = g_build_path("/", g_get_user_config_dir(), "remmina", NULL);
+	remmina_dir = g_build_path("/", g_get_user_config_dir(), LREMOTE_DIRNAME, NULL);
 	/* Create the XDG_CONFIG_HOME directory */
 	g_mkdir_with_parents(remmina_dir, 0750);
 
@@ -250,7 +250,7 @@ void remmina_pref_init(void)
 		dir = g_dir_open(remmina_dir, 0, NULL);
 		remmina_pref_path = g_build_path("/", remmina_dir, filename, NULL);
 		user_config_path = g_build_path("/", g_get_user_config_dir(),
-				     "remmina", filename, NULL);
+				     LREMOTE_DIRNAME, filename, NULL);
 		remmina_pref_file_do_copy(remmina_pref_path, user_config_path);
 		g_dir_close(dir);
 		g_free(remmina_pref_path);
@@ -262,13 +262,13 @@ void remmina_pref_init(void)
 
 	g_free(remmina_dir), remmina_dir = NULL;
 	for (i = 0; dirs[i] != NULL; ++i) {
-		remmina_dir = g_build_path("/", dirs[i], "remmina", NULL);
+		remmina_dir = g_build_path("/", dirs[i], LREMOTE_DIRNAME, NULL);
 		if (g_file_test(remmina_dir, G_FILE_TEST_IS_DIR)) {
 			dir = g_dir_open(remmina_dir, 0, NULL);
 			while ((filename = g_dir_read_name(dir)) != NULL) {
 				remmina_pref_path = g_build_path("/", remmina_dir, filename, NULL);
 				user_config_path = g_build_path("/", g_get_user_config_dir(),
-							"remmina", filename, NULL);
+							LREMOTE_DIRNAME, filename, NULL);
 				remmina_pref_file_do_copy(remmina_pref_path, user_config_path);
 				g_free(remmina_pref_path);
 				g_free(user_config_path);
@@ -286,7 +286,7 @@ void remmina_pref_init(void)
 	if (remmina_dir != NULL)
 		g_free(remmina_dir), remmina_dir = NULL;
 	remmina_dir = g_build_path("/", g_get_user_config_dir(),
-				   "remmina", NULL);
+				   LREMOTE_DIRNAME, NULL);
 
 	remmina_pref_file = g_strdup_printf("%s/remmina.pref", remmina_dir);
 	/* remmina.colors */
@@ -653,7 +653,7 @@ void remmina_pref_init(void)
 	if (g_key_file_has_key(gkeyfile, "remmina_pref", "tab_mode", NULL))
 		remmina_pref.tab_mode = g_key_file_get_integer(gkeyfile, "remmina_pref", "tab_mode", NULL);
 	else
-		remmina_pref.tab_mode = 0;
+		remmina_pref.tab_mode = REMMINA_TAB_ALL;	/* lRemote: every session as a tab of one window, like mRemoteNG */
 
 	if (g_key_file_has_key(gkeyfile, "remmina_pref", "fullscreen_toolbar_visibility", NULL))
 		remmina_pref.fullscreen_toolbar_visibility = g_key_file_get_integer(gkeyfile, "remmina_pref", "fullscreen_toolbar_visibility", NULL);

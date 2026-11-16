@@ -89,6 +89,8 @@ list(
   "lremote_crypto.h"
   "lremote_mremoteng.c"
   "lremote_mremoteng.h"
+  "lremote_window.c"
+  "lremote_window.h"
   "remmina_backup.c"
   "remmina_backup.h"
   "remmina_theme.c"
@@ -168,6 +170,7 @@ compile_gresources(
 
 add_custom_target(resource DEPENDS ${RESOURCE_FILE})
 add_executable(remmina ${REMMINA_SRCS} ${RESOURCE_FILE})
+set_target_properties(remmina PROPERTIES OUTPUT_NAME lremote)
 add_dependencies(remmina resource)
 target_link_libraries(remmina ${GTK_LIBRARIES} -rdynamic)
 
@@ -179,7 +182,7 @@ if(WITH_PYTHONLIBS)
 endif()
 
 if(WITH_MANPAGES)
-  install(FILES remmina.1 DESTINATION ${CMAKE_INSTALL_FULL_MANDIR}/man1)
+  install(FILES remmina.1 DESTINATION ${CMAKE_INSTALL_FULL_MANDIR}/man1 RENAME lremote.1)
 endif()
 
 target_link_libraries(remmina ${CMAKE_THREAD_LIBS_INIT})
@@ -281,10 +284,6 @@ include_directories(SYSTEM ${PCRE2_INCLUDE_DIRS})
 add_subdirectory(external_tools)
 
 install(TARGETS remmina DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(
-  DIRECTORY include/remmina/
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/remmina
-  FILES_MATCHING
-  PATTERN "*.h")
+# Plugin headers are not installed: lRemote does not ship a development package
 
 add_definitions(-DG_LOG_DOMAIN="remmina")

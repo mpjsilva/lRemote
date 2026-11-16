@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=lRemote
+GenericName=Remote Desktop Manager
+GenericName[pt_BR]=Gerenciador de áreas de trabalho remotas
+Comment=Manage RDP, VNC, SPICE, SSH and web connections in a tree with tabs
+Comment[pt_BR]=Gerencie conexões RDP, VNC, SPICE, SSH e web em árvore com abas
+Exec=lremote %U
+Icon=io.github.mpjsilva.lRemote
+Terminal=false
+Categories=Network;RemoteAccess;GTK;
+Keywords=rdp;vnc;ssh;spice;remote;mremoteng;
+StartupWMClass=lRemote

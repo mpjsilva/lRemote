@@ -351,7 +351,7 @@ static gint compare_secret_plugin_init_order(gconstpointer a, gconstpointer b)
 static gchar* remmina_plugin_manager_create_alt_plugin_dir(void)
 {
 	gchar *plugin_dir;
-	plugin_dir = g_build_path("/", g_get_user_config_dir(), "remmina", "plugins", NULL);
+	plugin_dir = g_build_path("/", g_get_user_config_dir(), LREMOTE_DIRNAME, "plugins", NULL);
 
 	if (g_file_test(plugin_dir, G_FILE_TEST_IS_DIR)) {
 		// Do nothing, directory already exists
@@ -912,7 +912,7 @@ GFile* remmina_create_plugin_file(const gchar* plugin_name, const gchar* plugin_
 		snprintf(file_name, MAX_PLUGIN_NAME_SIZE, "%s/%s_%s", plugin_dir, g_path_get_basename(plugin_name), plugin_version);
 	}
 	else{
-		plugin_dir = g_build_path("/", g_get_user_config_dir(), "remmina", "plugins", NULL);
+		plugin_dir = g_build_path("/", g_get_user_config_dir(), LREMOTE_DIRNAME, "plugins", NULL);
 		snprintf(file_name, MAX_PLUGIN_NAME_SIZE, "%s/%s", plugin_dir, g_path_get_basename(plugin_name));
 	}
 	GFile* plugin_file = g_file_new_for_path(file_name);

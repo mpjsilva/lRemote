@@ -312,7 +312,7 @@ static void remmina_on_startup(GApplication *app)
 	gdk_set_program_class(REMMINA_APP_ID);
 
 	gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
-					  REMMINA_RUNTIME_DATADIR G_DIR_SEPARATOR_S "icons");
+					  REMMINA_RUNTIME_DATADIR G_DIR_SEPARATOR_S "lremote" G_DIR_SEPARATOR_S "icons");
 	g_application_hold(app);
 	remmina_info_schedule();
 

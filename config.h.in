@@ -17,7 +17,9 @@
 #define VERSION			"${Remmina_VERSION}"
 #define REMMINA_GIT_REVISION	"${REMMINA_GIT_REVISION}"
 
-#define GETTEXT_PACKAGE		remmina
+#define GETTEXT_PACKAGE		"lremote"
+/* Name of the per-user config, data and cache directories */
+#define LREMOTE_DIRNAME		"lremote"
 
 #define REMMINA_RUNTIME_DATADIR			"${REMMINA_RUNTIME_DATADIR}"
 #define REMMINA_RUNTIME_LOCALEDIR		"${REMMINA_RUNTIME_LOCALEDIR}"

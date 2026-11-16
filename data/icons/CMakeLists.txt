@@ -32,8 +32,8 @@
 # files in the program, then also delete it here.
 
 
-set(APPICONSCALE_ACTIONS_DIR "${REMMINA_DATADIR}/icons/hicolor/scalable/actions")
-set(APPICONSCALE_EMBLEMS_DIR "${REMMINA_DATADIR}/icons/hicolor/scalable/emblems")
+set(APPICONSCALE_ACTIONS_DIR "${REMMINA_DATADIR}/lremote/icons")
+set(APPICONSCALE_EMBLEMS_DIR "${REMMINA_DATADIR}/lremote/icons")
 
 set(APPICONSCALE_ACTIONS_DATA
     scalable/actions/org.remmina.Remmina-camera-photo-symbolic.svg

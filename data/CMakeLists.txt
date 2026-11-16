@@ -31,9 +31,9 @@
 # files in the program, then also delete it here.
 
 add_subdirectory(theme)
-add_subdirectory(desktop)
+add_subdirectory(lremote)
 add_subdirectory(icons)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/remmina.pc.in
     ${CMAKE_CURRENT_BINARY_DIR}/remmina.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/remmina.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+# lRemote does not ship a development package
