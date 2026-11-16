@@ -138,6 +138,8 @@ typedef struct {
 
 static LremoteWindow *lw = NULL;
 
+static void lw_update_start_page(RemminaFile *f);
+
 static const gint colordepths[] = { 0, 8, 15, 16, 24, 32 };
 
 /* ------------------------------------------------------------------ */
@@ -551,6 +553,8 @@ static void lw_reload(void)
 	g_free(keep_file);
 	g_free(keep_folder);
 	lw_update_status();
+	if (!lw->selected_file)
+		lw_update_start_page(NULL);
 }
 
 void lremote_window_refresh(void)
