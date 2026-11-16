@@ -1,6 +1,6 @@
 Name:           lremote
 Version:        0.1.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        mRemoteNG-style remote connections manager built on the Remmina engine
 License:        GPL-2.0-or-later
 URL:            https://github.com/mpjsilva/lRemote
@@ -59,6 +59,9 @@ chmod 755 %{buildroot}%{_bindir}/lremote
 %{_mandir}/man1/*
 
 %changelog
+* Mon Nov 16 2026 mpjsilva - 0.1.0-5
+- mRemoteNG import: accept <mrng:Connections>, keep duplicate connections.
+
 * Mon Nov 16 2026 mpjsilva - 0.1.0-2
 - Self-contained package: all libraries and icon themes bundled.
 - Fix SPICE plugin failing to load.

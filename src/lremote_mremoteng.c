@@ -316,6 +316,21 @@ static void mrng_import_connection(MrngParser *p, MrngNode *node, MrngNode *pare
 	}
 
 	remmina_file_generate_filename(f);
+	/* Never overwrite a profile: duplicates in mRemoteNG get a numbered file */
+	if (remmina_file_get_filename(f) && g_file_test(remmina_file_get_filename(f), G_FILE_TEST_EXISTS)) {
+		gchar *base = g_strndup(remmina_file_get_filename(f), strlen(remmina_file_get_filename(f)) - strlen(".remmina"));
+		gchar *alt = NULL;
+		gint n;
+		for (n = 2; ; n++) {
+			g_free(alt);
+			alt = g_strdup_printf("%s-%d.remmina", base, n);
+			if (!g_file_test(alt, G_FILE_TEST_EXISTS))
+				break;
+		}
+		remmina_file_set_filename(f, alt);
+		g_free(alt);
+		g_free(base);
+	}
 	/* save() requires the state file, which generate_filename() leaves unset */
 	remmina_file_set_statefile(f);
 	remmina_file_save(f);
