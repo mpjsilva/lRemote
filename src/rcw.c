@@ -3831,17 +3831,45 @@ static void rcw_on_switch_page(GtkNotebook *notebook, GtkWidget *newpage, guint 
 static void rcw_on_page_added(GtkNotebook *notebook, GtkWidget *child, guint page_num,
 			      RemminaConnectionWindow *cnnwin)
 {
+	RemminaConnectionObject *cnnobj = (RemminaConnectionObject *)g_object_get_data(G_OBJECT(child), "cnnobj");
+
+	/* lRemote: a tab dropped straight on this tab bar (shared notebook group) */
+	if (cnnobj && cnnobj->cnnwin != cnnwin) {
+		cnnobj->cnnwin = cnnwin;
+		remmina_protocol_widget_set_hostkey_func(REMMINA_PROTOCOL_WIDGET(cnnobj->proto),
+							 (RemminaHostkeyFunc)rcw_hostkey_func);
+	}
 	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(cnnwin->priv->notebook)) > 0)
 		rcw_update_notebook(cnnwin);
 }
 
-static gboolean rcw_embedded_empty_check(gpointer data)
+/* An emptied connection window is destroyed only after its notebook's tab
+ * drag has finished: on Wayland "drag-end" arrives after the page moved, and
+ * GtkNotebook's handler touches the source notebook (crash if destroyed). */
+static gboolean rcw_empty_check(gpointer data)
 {
-	RemminaConnectionWindow *cnnwin = data;
+	GtkWidget *w = data;
 
-	if (cnnwin == rcw_embedded && gtk_notebook_get_n_pages(GTK_NOTEBOOK(cnnwin->priv->notebook)) <= 0)
-		gtk_widget_destroy(GTK_WIDGET(cnnwin));
+	if (!g_object_get_data(G_OBJECT(w), "lremote-dragging")) {
+		RemminaConnectionWindow *cnnwin = RCW(w);
+		if (cnnwin->priv && cnnwin->priv->notebook
+		    && gtk_notebook_get_n_pages(GTK_NOTEBOOK(cnnwin->priv->notebook)) <= 0)
+			gtk_widget_destroy(w);
+	}
+	g_object_unref(w);
 	return G_SOURCE_REMOVE;
+}
+
+static void rcw_nb_drag_begin(GtkWidget *nb, GdkDragContext *ctx, gpointer cnnwin)
+{
+	g_object_set_data(G_OBJECT(cnnwin), "lremote-dragging", GINT_TO_POINTER(1));
+}
+
+static void rcw_nb_drag_end(GtkWidget *nb, GdkDragContext *ctx, gpointer cnnwin)
+{
+	g_object_set_data(G_OBJECT(cnnwin), "lremote-dragging", NULL);
+	/* runs after GtkNotebook's own drag_end handler */
+	g_idle_add(rcw_empty_check, g_object_ref(cnnwin));
 }
 
 static void rcw_on_page_removed(GtkNotebook *notebook, GtkWidget *child, guint page_num,
@@ -3850,11 +3878,9 @@ static void rcw_on_page_removed(GtkNotebook *notebook, GtkWidget *child, guint p
 	TRACE_CALL(__func__);
 
 	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(cnnwin->priv->notebook)) <= 0) {
-		if (cnnwin == rcw_embedded)
-			/* the tab may still be in flight to another window: decide later */
-			g_idle_add(rcw_embedded_empty_check, cnnwin);
-		else
-			gtk_widget_destroy(GTK_WIDGET(cnnwin));
+		if (g_object_get_data(G_OBJECT(cnnwin), "lremote-dragging"))
+			return; /* rcw_nb_drag_end decides */
+		g_idle_add(rcw_empty_check, g_object_ref(cnnwin));
 	}
 
 }
@@ -3955,12 +3981,15 @@ rcw_create_notebook(RemminaConnectionWindow *cnnwin)
 	notebook = GTK_NOTEBOOK(gtk_notebook_new());
 
 	gtk_notebook_set_scrollable(GTK_NOTEBOOK(notebook), TRUE);
+	gtk_notebook_set_group_name(GTK_NOTEBOOK(notebook), "lremote-sessions");
 	gtk_widget_show(GTK_WIDGET(notebook));
 
 	g_signal_connect(G_OBJECT(notebook), "create-window", G_CALLBACK(rcw_on_notebook_create_window), cnnwin);
 	g_signal_connect(G_OBJECT(notebook), "switch-page", G_CALLBACK(rcw_on_switch_page), cnnwin);
 	g_signal_connect(G_OBJECT(notebook), "page-added", G_CALLBACK(rcw_on_page_added), cnnwin);
 	g_signal_connect(G_OBJECT(notebook), "page-removed", G_CALLBACK(rcw_on_page_removed), cnnwin);
+	g_signal_connect(G_OBJECT(notebook), "drag-begin", G_CALLBACK(rcw_nb_drag_begin), cnnwin);
+	g_signal_connect(G_OBJECT(notebook), "drag-end", G_CALLBACK(rcw_nb_drag_end), cnnwin);
 	gtk_widget_set_can_focus(GTK_WIDGET(notebook), FALSE);
 
 	return notebook;

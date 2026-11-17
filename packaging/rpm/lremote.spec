@@ -1,6 +1,6 @@
 Name:           lremote
 Version:        0.1.0
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        mRemoteNG-style remote connections manager built on the Remmina engine
 License:        GPL-2.0-or-later
 URL:            https://github.com/mpjsilva/lRemote
@@ -60,6 +60,10 @@ chmod 755 %{buildroot}%{_bindir}/lremote
 %{_mandir}/man1/*
 
 %changelog
+* Tue Nov 17 2026 mpjsilva - 0.1.0-12
+- Fix crash on Wayland when a tab is dragged out (source notebook destroyed before drag-end).
+- Tabs can be dropped directly on any tab bar (shared notebook group).
+
 * Tue Nov 17 2026 mpjsilva - 0.1.0-11
 - .deb package for Ubuntu 24.04 and Debian 13; the updater installs the .deb with apt on those systems.
 
