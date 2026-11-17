@@ -25,3 +25,4 @@ CMakeSettings.json
 .vscode
 build/
 dist/
+imagens/*.xml
