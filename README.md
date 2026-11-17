@@ -25,7 +25,7 @@ O lRemote é um gerenciador de conexões remotas para quem vem do Windows e do m
 
 Este é um **projeto de estudo de UI/UX**: a janela foi redesenhada sobre o Remmina para praticar fluxo de trabalho, abas, migração de dados e empacotamento.
 
-Versão atual: **0.1.0-13** · [Releases](https://github.com/mpjsilva/lRemote/releases) · [Desenvolvimento](#para-desenvolvedores)
+Versão atual: **0.1.0-14** · [Releases](https://github.com/mpjsilva/lRemote/releases) · [Desenvolvimento](#para-desenvolvedores)
 
 ## Principais diferenciais
 
@@ -59,13 +59,13 @@ Baixe o pacote na página de [Releases](https://github.com/mpjsilva/lRemote/rele
 ### Fedora 44 (RPM)
 
 ```bash
-sudo dnf install ./lremote-0.1.0-13.fc44.x86_64.rpm
+sudo dnf install ./lremote-0.1.0-14.fc44.x86_64.rpm
 ```
 
 ### Ubuntu 24.04, Debian 13 ou mais novos (.deb)
 
 ```bash
-sudo apt install ./lremote_0.1.0-13_amd64.deb
+sudo apt install ./lremote_0.1.0-14_amd64.deb
 ```
 
 Depois, abra o **lRemote** pelo menu de aplicativos ou rode `lremote` no terminal. Para ver a versão instalada: `lremote --version`.
@@ -127,7 +127,7 @@ bash packaging/deb/build-deb.sh 11 dist
 
 ## Limitações conhecidas
 
-- Testado de verdade com SSH (sessões, abas e tela cheia) em Fedora 44 limpo. RDP, VNC e SPICE usam o código do Remmina sem mudanças, mas ainda não foram testados dentro das abas.
+- Testado com SSH e RDP (aba, janela separada, tela cheia, teclado) contra servidores de teste em contêiner (OpenSSH e FreeRDP shadow). VNC e SPICE ainda não foram testados dentro das abas.
 - Com as sessões dentro da janela principal, a captura de teclado do Remmina (que prende atalhos do sistema como Alt + Tab) fica desligada. Para isso, use **Conectar em nova janela** ou a tela cheia.
 - O menu da bandeja não foi conferido numa área de trabalho real; em ambientes sem bandeja (GNOME sem extensão), a opção de minimizar para a bandeja não tem efeito.
 - O pacote .deb foi testado em contêineres Ubuntu 24.04 e Debian 13, não numa instalação com área de trabalho.

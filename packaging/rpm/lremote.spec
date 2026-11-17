@@ -1,6 +1,6 @@
 Name:           lremote
 Version:        0.1.0
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        mRemoteNG-style remote connections manager built on the Remmina engine
 License:        GPL-2.0-or-later
 URL:            https://github.com/mpjsilva/lRemote
@@ -60,6 +60,9 @@ chmod 755 %{buildroot}%{_bindir}/lremote
 %{_mandir}/man1/*
 
 %changelog
+* Tue Nov 17 2026 mpjsilva - 0.1.0-14
+- Fix RDP in tabs: connections failed with a 0x0 desktop size (monitor read from the hidden session window).
+
 * Tue Nov 17 2026 mpjsilva - 0.1.0-13
 - Stability fix in session tabs (Wayland).
 

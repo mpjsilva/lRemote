@@ -2273,13 +2273,13 @@ void remmina_protocol_widget_update_remote_resolution(RemminaProtocolWidget *gp)
 		}
 		/* Due to approximations while GTK calculates scaling, (w x h) may exceed our monitor geometry
 		 * Adjust to fit. */
-		if (w > rect.width)
+		if (rect.width > 0 && w > rect.width)
 			w = rect.width;
-		if (h > rect.height)
+		if (rect.height > 0 && h > rect.height)
 			h = rect.height;
 	} else if (res_mode == RES_USE_CLIENT) {
-		w = rect.width;
-		h = rect.height;
+		w = rect.width > 0 ? rect.width : 1920;
+		h = rect.height > 0 ? rect.height : 1080;
 	} else {
 		w = wfile;
 		h = hfile;

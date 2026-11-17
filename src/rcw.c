@@ -1067,20 +1067,29 @@ void rco_get_monitor_geometry(RemminaConnectionObject *cnnobj, GdkRectangle *sz)
 	if (!cnnobj)
 		return;
 	if (!cnnobj->cnnwin)
-		return;
-	if (!gtk_widget_is_visible(GTK_WIDGET(cnnobj->cnnwin)))
+	return;
+
+	/* lRemote: an embedded session lives in the main window, while its
+	 * connection window stays hidden; measure the window actually shown */
+	GtkWidget *top = GTK_WIDGET(cnnobj->cnnwin);
+	if (cnnobj->cnnwin == rcw_embedded && cnnobj->proto) {
+		GtkWidget *t = gtk_widget_get_toplevel(cnnobj->proto);
+		if (GTK_IS_WINDOW(t))
+			top = t;
+	}
+	if (!gtk_widget_is_visible(top) || !gtk_widget_get_window(top))
 		return;
 
 #if GTK_CHECK_VERSION(3, 22, 0)
 	GdkDisplay *display;
 	GdkMonitor *monitor;
-	display = gtk_widget_get_display(GTK_WIDGET(cnnobj->cnnwin));
-	monitor = gdk_display_get_monitor_at_window(display, gtk_widget_get_window(GTK_WIDGET(cnnobj->cnnwin)));
+	display = gtk_widget_get_display(top);
+	monitor = gdk_display_get_monitor_at_window(display, gtk_widget_get_window(top));
 #else
 	GdkScreen *screen;
 	gint monitor;
-	screen = gtk_window_get_screen(GTK_WINDOW(cnnobj->cnnwin));
-	monitor = gdk_screen_get_monitor_at_window(screen, gtk_widget_get_window(GTK_WIDGET(cnnobj->cnnwin)));
+	screen = gtk_window_get_screen(GTK_WINDOW(top));
+	monitor = gdk_screen_get_monitor_at_window(screen, gtk_widget_get_window(top));
 #endif
 
 #if GTK_CHECK_VERSION(3, 22, 0)
