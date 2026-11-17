@@ -25,14 +25,14 @@ O lRemote é um gerenciador de conexões remotas para quem vem do Windows e do m
 
 Este é um **projeto de estudo de UI/UX**: a janela foi redesenhada sobre o Remmina para praticar fluxo de trabalho, abas, migração de dados e empacotamento.
 
-Versão atual: **0.1.0-12** · [Releases](https://github.com/mpjsilva/lRemote/releases) · [Desenvolvimento](#para-desenvolvedores)
+Versão atual: **0.1.0-13** · [Releases](https://github.com/mpjsilva/lRemote/releases) · [Desenvolvimento](#para-desenvolvedores)
 
 ## Principais diferenciais
 
 | | Remmina | lRemote |
 |---|---|---|
 | **Organização** | Lista de perfis com grupos | Árvore de pastas como no mRemoteNG, com busca e painel **Configuração** embaixo |
-| **Sessões** | Uma janela por conexão (ou agrupadas) | Abas na janela principal. Arraste a aba para fora e ela vira janela própria; arraste de volta e ela volta para a barra |
+| **Sessões** | Uma janela por conexão (ou agrupadas) | Abas na janela principal, ou cada conexão na sua janela, como preferir |
 | **Migração** | Sem importação do mRemoteNG | Importa o `confCons.xml` do mRemoteNG, com pastas, protocolos e senhas (AES-GCM e formato antigo, senha mestra padrão ou própria) |
 | **Bandeja** | Ícone com a lista de perfis | **Minimizar para a bandeja ao fechar**; menu com Restaurar, Conexões, Verificar atualizações e Sair |
 | **Atualização** | Pelo gerenciador da distribuição | **Ajuda › Verificar atualizações** baixa a release nova do GitHub e instala (dnf ou apt), depois reinicia |
@@ -50,7 +50,7 @@ E mais:
 | | | |
 |:-:|:-:|:-:|
 | <img src="docs/prints/01-inicio.png" width="300"><br>Árvore, configuração e página inicial | <img src="docs/prints/02-abas.png" width="300"><br>Sessões SSH em abas | <img src="docs/prints/03-escuro.png" width="300"><br>Tema escuro |
-| <img src="docs/prints/04-janela-solta.png" width="300"><br>Aba solta em janela própria | <img src="docs/prints/05-menu.png" width="300"><br>Botão direito numa conexão | <img src="docs/prints/06-exibir.png" width="300"><br>Menu Exibir: tema e abas |
+| <img src="docs/prints/05-menu.png" width="300"><br>Botão direito numa conexão | <img src="docs/prints/06-exibir.png" width="300"><br>Menu Exibir: tema e abas | |
 
 ## Instalação
 
@@ -59,13 +59,13 @@ Baixe o pacote na página de [Releases](https://github.com/mpjsilva/lRemote/rele
 ### Fedora 44 (RPM)
 
 ```bash
-sudo dnf install ./lremote-0.1.0-12.fc44.x86_64.rpm
+sudo dnf install ./lremote-0.1.0-13.fc44.x86_64.rpm
 ```
 
 ### Ubuntu 24.04, Debian 13 ou mais novos (.deb)
 
 ```bash
-sudo apt install ./lremote_0.1.0-12_amd64.deb
+sudo apt install ./lremote_0.1.0-13_amd64.deb
 ```
 
 Depois, abra o **lRemote** pelo menu de aplicativos ou rode `lremote` no terminal. Para ver a versão instalada: `lremote --version`.
@@ -91,8 +91,6 @@ Pastas viram pastas da árvore, e cada conexão RDP, VNC, SSH ou HTTP(S) vira um
 | Árvore | Delete / F2 | Apaga ou renomeia |
 | Janela | Ctrl + N / Ctrl + Shift + N | Nova conexão / nova pasta (fora de uma sessão) |
 | Janela | Ctrl + , | Preferências |
-| Abas | Arrastar a aba para fora | Vira janela própria |
-| Janela solta | Arrastar a aba para a barra de abas da janela principal | Volta para junto das outras abas |
 | Sessão | Ctrl direito (tecla de atalho) | Comandos da sessão do Remmina, como Ctrl direito + F para tela cheia |
 | Bandeja | Botão do meio | Restaura a janela |
 
@@ -110,7 +108,7 @@ Com o foco numa sessão, as teclas vão para o computador remoto: Ctrl + N, Alt 
 - `src/lremote_window.c`: janela principal (árvore, painel Configuração, página inicial, abas embutidas, menus).
 - `src/lremote_mremoteng.c`, `src/lremote_crypto.c`: importação do mRemoteNG e decifragem das senhas.
 - `src/lremote_update.c`: verificação e instalação de atualizações pelas releases do GitHub.
-- `src/rcw.c`: janela de sessão do Remmina, adaptada para viver dentro da janela principal e para soltar e devolver abas.
+- `src/rcw.c`: janela de sessão do Remmina, adaptada para viver dentro da janela principal.
 - `src/remmina_icon.c`: ícone e menu da bandeja.
 - `packaging/rpm/`: spec do RPM e `bundle-libs.sh`, que copia as bibliotecas para dentro do pacote.
 - `packaging/deb/build-deb.sh`: o mesmo para o .deb.
@@ -129,8 +127,7 @@ bash packaging/deb/build-deb.sh 11 dist
 
 ## Limitações conhecidas
 
-- Testado de verdade com SSH (sessões, abas, tela cheia, soltar e devolver abas) em Fedora 44 limpo. RDP, VNC e SPICE usam o código do Remmina sem mudanças, mas ainda não foram testados dentro das abas.
-- Ao devolver uma aba solta, ela entra no começo da barra, não no ponto exato onde foi solta.
+- Testado de verdade com SSH (sessões, abas e tela cheia) em Fedora 44 limpo. RDP, VNC e SPICE usam o código do Remmina sem mudanças, mas ainda não foram testados dentro das abas.
 - Com as sessões dentro da janela principal, a captura de teclado do Remmina (que prende atalhos do sistema como Alt + Tab) fica desligada. Para isso, use **Conectar em nova janela** ou a tela cheia.
 - O menu da bandeja não foi conferido numa área de trabalho real; em ambientes sem bandeja (GNOME sem extensão), a opção de minimizar para a bandeja não tem efeito.
 - O pacote .deb foi testado em contêineres Ubuntu 24.04 e Debian 13, não numa instalação com área de trabalho.
