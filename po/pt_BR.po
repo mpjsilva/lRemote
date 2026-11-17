@@ -5888,3 +5888,6 @@ msgstr "Fechar o lRemote?"
 
 msgid "Open connections will be closed."
 msgstr "As conexões abertas serão fechadas."
+
+msgid "_Connections"
+msgstr "_Conexões"

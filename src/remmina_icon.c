@@ -272,19 +272,27 @@ remmina_icon_populate_menu(void)
 	GtkWidget *menuitem;
 
 	if (remmina_icon.icon && !remmina_pref.disable_tray_icon) {
-		menu = remmina_applet_menu_new();
-		app_indicator_set_menu(remmina_icon.icon, GTK_MENU(menu));
+		GtkWidget *top = gtk_menu_new(), *restore;
 
+		/* lRemote: short menu — Restore first, connections in a submenu */
+		remmina_icon_populate_additional_menu_item(top);
+		restore = GTK_WIDGET(g_list_nth_data(gtk_container_get_children(GTK_CONTAINER(top)), 0));
+		if (restore)
+			app_indicator_set_secondary_activate_target(remmina_icon.icon, restore);
+
+		menu = remmina_applet_menu_new();
 		remmina_applet_menu_set_hide_count(REMMINA_APPLET_MENU(menu), remmina_pref.applet_hide_count);
 		remmina_applet_menu_populate(REMMINA_APPLET_MENU(menu));
-		
-
+		remmina_icon_populate_extra_menu_item(menu);
+		menuitem = gtk_menu_item_new_with_mnemonic(_("_Connections"));
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), menu);
+		gtk_widget_show(menuitem);
+		gtk_menu_shell_insert(GTK_MENU_SHELL(top), menuitem, 1);
 		menuitem = gtk_separator_menu_item_new();
 		gtk_widget_show(menuitem);
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+		gtk_menu_shell_insert(GTK_MENU_SHELL(top), menuitem, 2);
 
-		remmina_icon_populate_additional_menu_item(menu);
-		remmina_icon_populate_extra_menu_item(menu);
+		app_indicator_set_menu(remmina_icon.icon, GTK_MENU(top));
 	}
 }
 
