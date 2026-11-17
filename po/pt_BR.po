@@ -55,10 +55,10 @@ msgstr "O servidor respondeu com o código %ld."
 #, c-format
 msgid ""
 "The package was saved to %s. You can install it with:\n"
-"sudo dnf install %s"
+"sudo %s install %s"
 msgstr ""
 "O pacote foi salvo em %s. Você pode instalá-lo com:\n"
-"sudo dnf install %s"
+"sudo %s install %s"
 
 #: src/lremote_update.c:298 src/lremote_update.c:345
 msgid "The update was not installed."

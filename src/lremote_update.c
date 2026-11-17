@@ -104,6 +104,12 @@ static void message(UpdateJob *j, GtkMessageType type, const gchar *primary, con
 	gtk_widget_destroy(d);
 }
 
+/* Installed from the .deb (dpkg) or from the .rpm */
+static gboolean installed_as_deb(void)
+{
+	return g_file_test("/var/lib/dpkg/info/lremote.list", G_FILE_TEST_EXISTS);
+}
+
 /* "0.1.0-6.fc44" -> "0.1.0-6" */
 static gchar *version_of_running(void)
 {
@@ -117,11 +123,16 @@ static gchar *version_of_running(void)
 	return r;
 }
 
-/* "lremote-0.1.0-6.fc44.x86_64.rpm" -> "0.1.0-6" */
+/* "lremote-0.1.0-6.fc44.x86_64.rpm" or "lremote_0.1.0-6_amd64.deb" -> "0.1.0-6" */
 static gchar *version_of_asset(const gchar *name)
 {
 	const gchar *start;
 	gchar *v, *dot;
+	if (g_str_has_prefix(name, "lremote_") && g_str_has_suffix(name, "_amd64.deb")) {
+		v = g_strdup(name + strlen("lremote_"));
+		*strstr(v, "_amd64.deb") = '\0';
+		return v;
+	}
 	if (!g_str_has_prefix(name, "lremote-"))
 		return NULL;
 	start = name + strlen("lremote-");
@@ -225,7 +236,7 @@ static void check_thread(GTask *task, gpointer src, gpointer data, GCancellable 
 			for (i = 0; assets && i < json_array_get_length(assets); i++) {
 				JsonObject *a = json_array_get_object_element(assets, i);
 				const gchar *name = json_object_get_string_member(a, "name");
-				if (name && g_str_has_suffix(name, ".x86_64.rpm")) {
+				if (name && g_str_has_suffix(name, installed_as_deb() ? "_amd64.deb" : ".x86_64.rpm")) {
 					j->asset_name = g_strdup(name);
 					j->asset_url = g_strdup(json_object_get_string_member(a, "url"));
 					break;
@@ -293,8 +304,8 @@ static void install_done(GObject *proc, GAsyncResult *res, gpointer data)
 	GtkWidget *d;
 
 	if (!g_subprocess_wait_check_finish(G_SUBPROCESS(proc), res, &err)) {
-		gchar *msg = g_strdup_printf(_("The package was saved to %s. You can install it with:\nsudo dnf install %s"),
-					     j->download_path, j->download_path);
+		gchar *msg = g_strdup_printf(_("The package was saved to %s. You can install it with:\nsudo %s install %s"),
+					     j->download_path, installed_as_deb() ? "apt" : "dnf", j->download_path);
 		message(j, GTK_MESSAGE_ERROR, _("The update was not installed."), msg);
 		g_free(msg);
 		g_clear_error(&err);
@@ -325,7 +336,8 @@ static void download_done(GObject *src, GAsyncResult *res, gpointer data)
 	GSubprocess *proc;
 	GError *err = NULL;
 	gchar *pkexec = g_find_program_in_path("pkexec");
-	gchar *dnf = g_find_program_in_path("dnf");
+	gboolean deb = installed_as_deb();
+	gchar *dnf = g_find_program_in_path(deb ? "apt-get" : "dnf");
 
 	if (j->error) {
 		message(j, GTK_MESSAGE_ERROR, _("Could not download the update."), j->error);
