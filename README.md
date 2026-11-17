@@ -25,7 +25,7 @@ O lRemote é um gerenciador de conexões remotas para quem vem do Windows e do m
 
 Este é um **projeto de estudo de UI/UX**: a janela foi redesenhada sobre o Remmina para praticar fluxo de trabalho, abas, migração de dados e empacotamento.
 
-Versão atual: **0.1.0-11** · [Releases](https://github.com/mpjsilva/lRemote/releases) · [Desenvolvimento](#para-desenvolvedores)
+Versão atual: **0.1.0-12** · [Releases](https://github.com/mpjsilva/lRemote/releases) · [Desenvolvimento](#para-desenvolvedores)
 
 ## Principais diferenciais
 
@@ -59,13 +59,13 @@ Baixe o pacote na página de [Releases](https://github.com/mpjsilva/lRemote/rele
 ### Fedora 44 (RPM)
 
 ```bash
-sudo dnf install ./lremote-0.1.0-11.fc44.x86_64.rpm
+sudo dnf install ./lremote-0.1.0-12.fc44.x86_64.rpm
 ```
 
 ### Ubuntu 24.04, Debian 13 ou mais novos (.deb)
 
 ```bash
-sudo apt install ./lremote_0.1.0-11_amd64.deb
+sudo apt install ./lremote_0.1.0-12_amd64.deb
 ```
 
 Depois, abra o **lRemote** pelo menu de aplicativos ou rode `lremote` no terminal. Para ver a versão instalada: `lremote --version`.
@@ -92,7 +92,7 @@ Pastas viram pastas da árvore, e cada conexão RDP, VNC, SSH ou HTTP(S) vira um
 | Janela | Ctrl + N / Ctrl + Shift + N | Nova conexão / nova pasta (fora de uma sessão) |
 | Janela | Ctrl + , | Preferências |
 | Abas | Arrastar a aba para fora | Vira janela própria |
-| Janela solta | Arrastar a aba para a janela principal | Volta para a barra de abas |
+| Janela solta | Arrastar a aba para a barra de abas da janela principal | Volta para junto das outras abas |
 | Sessão | Ctrl direito (tecla de atalho) | Comandos da sessão do Remmina, como Ctrl direito + F para tela cheia |
 | Bandeja | Botão do meio | Restaura a janela |
 
