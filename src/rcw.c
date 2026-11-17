@@ -197,6 +197,22 @@ static RemminaConnectionWindow *rcw_create_scrolled(gint width, gint height, gbo
 static RemminaConnectionWindow *rcw_embedded = NULL;
 static GtkWidget *rcw_embedded_grid = NULL;
 static gboolean rcw_force_window = FALSE;
+static gboolean rcw_force_embed = FALSE;
+
+/* TRUE when the GdkWindow under the pointer belongs to the lRemote main window */
+static gboolean rcw_window_is_main(GdkWindow *window)
+{
+	GtkWindow *main = lremote_window_get();
+	GdkWindow *mw, *p;
+
+	if (!main || !window || !gtk_widget_get_realized(GTK_WIDGET(main)))
+		return FALSE;
+	mw = gtk_widget_get_window(GTK_WIDGET(main));
+	for (p = window; p; p = gdk_window_get_parent(p))
+		if (p == mw)
+			return TRUE;
+	return FALSE;
+}
 static gboolean rcw_is_active(RemminaConnectionWindow *cnnwin)
 {
 	if (cnnwin == rcw_embedded)
@@ -3819,13 +3835,27 @@ static void rcw_on_page_added(GtkNotebook *notebook, GtkWidget *child, guint pag
 		rcw_update_notebook(cnnwin);
 }
 
+static gboolean rcw_embedded_empty_check(gpointer data)
+{
+	RemminaConnectionWindow *cnnwin = data;
+
+	if (cnnwin == rcw_embedded && gtk_notebook_get_n_pages(GTK_NOTEBOOK(cnnwin->priv->notebook)) <= 0)
+		gtk_widget_destroy(GTK_WIDGET(cnnwin));
+	return G_SOURCE_REMOVE;
+}
+
 static void rcw_on_page_removed(GtkNotebook *notebook, GtkWidget *child, guint page_num,
 				RemminaConnectionWindow *cnnwin)
 {
 	TRACE_CALL(__func__);
 
-	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(cnnwin->priv->notebook)) <= 0)
-		gtk_widget_destroy(GTK_WIDGET(cnnwin));
+	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(cnnwin->priv->notebook)) <= 0) {
+		if (cnnwin == rcw_embedded)
+			/* the tab may still be in flight to another window: decide later */
+			g_idle_add(rcw_embedded_empty_check, cnnwin);
+		else
+			gtk_widget_destroy(GTK_WIDGET(cnnwin));
+	}
 
 }
 
@@ -3860,22 +3890,45 @@ rcw_on_notebook_create_window(GtkNotebook *notebook, GtkWidget *page, gint x, gi
 
 	window = gdk_device_get_window_at_position(device, &x, &y);
 	srccnnwin = RCW(data);
+	cnnobj = (RemminaConnectionObject *)g_object_get_data(G_OBJECT(page), "cnnobj");
+
+	if (rcw_window_is_main(window)) {
+		/* lRemote: dropped on the main window, back into the tab bar */
+		if (srccnnwin == rcw_embedded)
+			return NULL;
+		dstcnnwin = rcw_embedded;
+		if (!dstcnnwin) {
+			rcw_force_embed = TRUE;
+			dstcnnwin = rcw_create_scrolled(640, 480, FALSE);
+			rcw_force_embed = FALSE;
+		}
+		cnnobj->cnnwin = dstcnnwin;
+		remmina_protocol_widget_set_hostkey_func(REMMINA_PROTOCOL_WIDGET(cnnobj->proto),
+							 (RemminaHostkeyFunc)rcw_hostkey_func);
+		return GTK_NOTEBOOK(dstcnnwin->priv->notebook);
+	}
+
 	dstcnnwin = RCW(remmina_widget_pool_find_by_window(REMMINA_TYPE_CONNECTION_WINDOW, window));
 
 	if (srccnnwin == dstcnnwin)
 		return NULL;
 
-	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(srccnnwin->priv->notebook)) == 1 && !dstcnnwin)
+	/* A lone tab can't leave its own window, but it can leave the main window */
+	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(srccnnwin->priv->notebook)) == 1 && !dstcnnwin
+	    && srccnnwin != rcw_embedded)
 		return NULL;
-
-	cnnobj = (RemminaConnectionObject *)g_object_get_data(G_OBJECT(page), "cnnobj");
 
 	if (!dstcnnwin) {
 		/* Drop is directed to a new rcw: create a new scrolled window to accommodate
 		 * the dropped connectionand move our cnnobj there. Width and
 		 * height of the new window are cloned from the current window */
 		srctag = (gchar *)g_object_get_data(G_OBJECT(srccnnwin), "tag");
-		gtk_window_get_size(GTK_WINDOW(srccnnwin), &width, &height);
+		if (srccnnwin == rcw_embedded) {
+			width = MAX(640, gtk_widget_get_allocated_width(GTK_WIDGET(srccnnwin->priv->notebook)));
+			height = MAX(480, gtk_widget_get_allocated_height(GTK_WIDGET(srccnnwin->priv->notebook)));
+		} else {
+			gtk_window_get_size(GTK_WINDOW(srccnnwin), &width, &height);
+		}
 		rcw_force_window = TRUE;
 		dstcnnwin = rcw_create_scrolled(width, height, FALSE);  // New dropped window is never maximized
 		rcw_force_window = FALSE;
@@ -3971,7 +4024,7 @@ static RemminaConnectionWindow *rcw_create_scrolled(gint width, gint height, gbo
 	/* The notebook and all its child must be realized now, or a reparent will
 	 * call unrealize() and will destroy a GtkSocket */
 	gtk_widget_show(grid);
-	if (!rcw_embedded && !rcw_force_window && lremote_window_embed_wanted()) {
+	if (!rcw_embedded && !rcw_force_window && (rcw_force_embed || lremote_window_embed_wanted())) {
 		/* lRemote: move toolbar+notebook into the main window; the
 		 * connection window itself stays hidden as a logic holder */
 		rcw_embedded = cnnwin;
